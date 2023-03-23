@@ -32,13 +32,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - name: Create test summary
-        uses: ./bin
-        with:
-          paths: test/results/*.xml
-          output: test/results/results.html
-      - name: Upload test summary
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-summary
-          path: test/results/results.html
