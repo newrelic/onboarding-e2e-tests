@@ -200,16 +200,16 @@ test.describe('Guided installation for Go', () => {
 
     // await page.waitForLoadState('networkidle');
 
-    // await page.getByTestId('platform.user-feedback-button').click();
+    await page.getByTestId('platform.user-feedback-button').click();
 
     // await page
     //   .getByRole('heading', { name: 'Do you have specific feedback for us?' })
     //   .click();
 
-    // await page.getByRole('button', { name: 'Close modal' }).click();
+    await page.getByRole('button', { name: 'Close modal' }).click();
 
     // await page.getByTestId('platform.stacked-view-close-button').click();
 
-    //await page.getByRole('button', { name: 'Back' }).click();
+    // await page.getByRole('button', { name: 'Back' }).click();
   });
 });

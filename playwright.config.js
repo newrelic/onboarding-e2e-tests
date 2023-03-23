@@ -18,6 +18,7 @@ module.exports = defineConfig({
     // baseURL: 'https://staging-one.newrelic.com',
     baseURL: 'https://dev-one.newrelic.com/?nerdpacks=local',
     trace: 'on-first-retry',
+    testIdAttribute: 'data-test-id',
   },
 
   projects: [
