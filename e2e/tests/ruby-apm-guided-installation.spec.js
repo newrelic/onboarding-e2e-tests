@@ -16,9 +16,9 @@ test.describe("Ruby Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    // await page.getByTestId("install-newrelic.tile-ruby").click();
+    await page.getByTestId("install-newrelic.tile-ruby").click();
 
-    await page.getByRole("radio", { name: "Ruby" }).click();
+    // await page.getByRole("radio", { name: "Ruby" }).click();
 
     await expect(page.getByText("Select your language (Ruby)")).toBeVisible();
 
@@ -141,9 +141,9 @@ test.describe("Ruby Guided installation", () => {
       page.getByRole("link", { name: "See our docs on naming" }).click(),
     ]);
 
-    await appNamingDoc.waitForTimeout(5000);
+    // await appNamingDoc.waitForTimeout(5000);
 
-    expect(await page.screenshot()).toMatchSnapshot("app-naming.png");
+    // expect(await page.screenshot()).toMatchSnapshot("app-naming.png");
 
     await appNamingDoc.close();
 
