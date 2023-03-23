@@ -1,21 +1,14 @@
 {
-  "name": "onboarding-e2e-tests",
+  "name": "standaloneplywright",
   "version": "1.0.0",
-  "description": "guided installation e2e testing with playwright",
+  "description": "",
   "main": "index.js",
   "scripts": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/newrelic/onboarding-e2e-tests.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/newrelic/onboarding-e2e-tests/issues"
-  },
-  "homepage": "https://github.com/newrelic/onboarding-e2e-tests#readme",
   "devDependencies": {
-    "@playwright/test": "^1.32.0"
+    "@playwright/test": "^1.31.2"
   },
   "dependencies": {
     "dotenv": "^16.0.3"

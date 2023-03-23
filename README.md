@@ -1,1 +1,2 @@
-# onboarding-e2e-tests
+# standalone-playwirght-e2e-test
+standalone-playwirght-e2e-test

@@ -1,0 +1,35 @@
+{
+  "cookies": [
+    {
+      "name": "login_service_staging-login_newrelic_com_tokens",
+      "value": "%7B%22token%22%3A%22y4iAoaKDDrC02f3YNYQzK2%2FQyLWVKTTY5hpDmHKTKuzRB5CxgiFLpqlxqh71HXSjBcqb6x%2F6NS5jmdFDH7OXKmJE2LM7tms1THtKCYdnsP26N4qrK4kzT%2BnJl%2BqqrrkgrpX1gsdCHR12UPbfL2TMNjohwoTLDAqeBD%2F2TTD%2FVbt7hqAa%2B5bO%2BTzsarUgsD9o0Yq8lProwAzvfLU8bUSBIApM9jyNHaK7Tr6FDhfhFoFW%2FZFQxuPzcl%2FBTYNSSqsoXkijg7hTbuqs3t2lbwuWChvDEdiQQb5xNd46CXae0uxSbKlOZNlEQaBwm73YCz%2FSxEqwnHVoWnDVxfYpZFQsXQ%3D%3D%22%2C%22refresh_token%22%3A%22Mije6U8BkxP6BMRnNPwRag9j3jyJTJrKTy6qQx3%2Bu48z1i5z4dO0OLlfTSNN5ThDQtM3CTrXzMw6pQllamlHjRn4IuXfosXBAakbgX6JIG57XS8udZq6joKRqMGprsoD%2F%2Fpwl2wetdwC5%2FpnJ8V4opALNLTBUzv2MwUvYfwwBR%2FnnIj4iEOW5hlEMtswC781VeAvfQcB927elPR%2FQ0Mte%2BTTENaaUMWp4fxLJ0DitKUoYBAVHDPOpgqUqU7oItD6ofOGxavV%2BAiWZNpJiDi95xBHYeqa%2B5G%2FycYJHVE8OxQKGxPZfKyK38WjImnoB2Q8RnLr58zv8ATlSnLL6h7GGw%3D%3D%22%7D",
+      "domain": ".newrelic.com",
+      "path": "/",
+      "expires": 1713966920.343709,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "staging-login_idle_session_timeout",
+      "value": "",
+      "domain": "staging-login.newrelic.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_golden_gate_session",
+      "value": "6LTR1BWioi6MU9OMrkdRh3E25WHZOvtWHRdXUbUUeGzhFt%2BYXBBE86%2B2wDiiEHaUqQ3tgjnTHHBM2xlnloVmImDODL53derWXXe%2B2yT44UVtEcYNm28diYMVbwo5w7rP5%2BwMWiVG9%2Bfg1No08yKSFE9QDWnvGZpvGZCU4s44fxY8ugbtdK99acIycSF4n8GERvpSKXqvMlGHgx5PivKB9KRxCiY%2F9bIZOi%2FWIqQlg%2B1AvAUqcPDUpbqbGYcdI5OAGYzLNvzJJWr0mZ5%2ByXAsTuZK8lvl82nVvAHhyJEtgctDTsrgABuw8iFjr6jviBDY3RJ85IEKpaM%3D--M1DPEYkAFYgCC46J--9g8XmKwf2P%2BEUE%2Fa1%2BkxLQ%3D%3D",
+      "domain": "staging-login.newrelic.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}
