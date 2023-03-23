@@ -4,3 +4,4 @@ node_modules/
 /playwright/.cache/
 .env
 tests-examples/
+package-lock.json
