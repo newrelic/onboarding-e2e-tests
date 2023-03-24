@@ -2,10 +2,10 @@
   "cookies": [
     {
       "name": "login_service_staging-login_newrelic_com_tokens",
-      "value": "%7B%22token%22%3A%22XprXusxU3uqWvwezIMZQFg7l1Xg0NELKeiJr%2FbEM9QLeyIOKydmKUmmtNYUPxsVXo5CvCSLJubSchyf%2BGSfTUeHChRUiGz6z6Me5kYS46ZyDY7pFXz0NA8s%2BfdA0MlVYkq1mfw28Wv4leBZQQuIk7hqKd7SAiElWmJ%2BXO1jueQAAtE6RzZ343z9QzGM6qmB4mqyC2tH57gQyxu2hIArJETDSyg9z5fZL%2BwjCVuR3VN2a4sk4hlfcssA4eEtObjEtRbbxnLOo9JAIg7tQYE4l%2FlXenmRAElH8MvYFgwi6ceIPBMJDifwqpIT1cfA7vkhqD1bmBhCkP3U6PRltYUhU4g%3D%3D%22%2C%22refresh_token%22%3A%22wURd%2FmtxEMtlpcrotE3uoLIjRr4dSuLY4keiKIyjTGz9SAmd%2B6Wmp6NhLpSVedjnlYsmJea2e0e7HoC1gu3gbb1HLZ3Qqx5LOJlO4gGyZNiNffxPC4Zj%2BggdqcGyWoq%2F7BJvrlmrF9%2FS8ddiRaUPG%2F2q%2BFHs%2BBpTF15wKsICHVzsBKTVBoxA45XTi2PX7WUuicE%2FO8GFeKWm9zwkLfZYZ53qlq%2FXcC05MWLgHvxQ2Wzjp%2BdonLphnQAk9Zl3fcfoX38cU31bdKmoPRfhFAuy6wwxi3HG114DLz8wCdm8AtrjWWL1Ej6ZqkfsAUwo9HffFp5DF5nJgc5Q2NSckd9SjA%3D%3D%22%7D",
+      "value": "%7B%22token%22%3A%22AFpUIO2qwteWxlVJzyszFfaWNm%2FD%2BuKN87ugXesJxfe6yPrzsw3KT1WiAThSepQLCNLaiWxcDs0a4EVRcjA8yey0nwCI4hQ3qCgUkMlece01MoraGgsBUe1XKEDdfSMZ4ETkYjKNzIySUIRj08loBRlq7%2BYc7RQzLxzDLZdy2mYN2v0OjCW2MJBn5dX3GEqcL5V6IC2oIBV0vbVkVSjHX4jWG5rl2WFh9IHJS4tliqwU6cx2Ki77%2FIf%2Fod0VIjP4%2BlsmlAGIaZ0fJIOVLnjMM4uN8az1lhIdoerG2iXpTmF8gQFNwLMXQowKVHqotASPA%2FnWBxDCoHXdpVx1e2%2FtOg%3D%3D%22%2C%22refresh_token%22%3A%22nepI9P1eVhQJtbrdkM2tD9m94do1XYAxsaT%2Fmll4FTK82Qa4o6q5q478DLJzzO7JnfHmAVCyRjNelSWtwLUFUpuolhzF7YBamqebYVLnuk2so9ko8%2BISgwRJQ4vTvYD1Z7MZ3DF3KXabnZdwj8tpKiDx5LLc%2FB4st32qtEaeojT816cx7y72cBHRj%2B1m86qco%2F1ZjCwOTQ39MMPE9UXJyhF8S%2B%2FYgzUJn3XAD4APH2ZbxvGL79SUJu9Vb0sHyrSjhv%2BFIJWWKmO2m4%2BkonS0BPiOzwz7paxwy6cVRHZ03WvdlaJejcY8TKUUVDc3FODewiSYt9NnNKpk2FO36SBj1Q%3D%3D%22%7D",
       "domain": ".newrelic.com",
       "path": "/",
-      "expires": 1714185411.563413,
+      "expires": 1714132806.995829,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
@@ -22,7 +22,7 @@
     },
     {
       "name": "_golden_gate_session",
-      "value": "lUxIS2RM4kCpMh2ut3shOazhAq25GKK8bYI6RGiN4NKW2UTI9Oi%2Blvui8fc8yYGUaajrt7E%2FFtPbnABzk2j3jipxJv2L8d1rGRCvYU53eYLIcvbKQgx1RE9y5N1LSh3A29Uw4tMqbLo5W9drXzR3XCTBAchr2m1COO55FMXGEIAhVkXoPHNUeV0ipeXu5Z4Wc9ASunC%2BKGTndE5YHZF1LNymUmBJgtC2iUI882mJiptDW7P3luNamKFEPF8vIh1kKFlZDBweEujpPDNHEjXabfdKkNjedngG4vvpetXBevieGdp8lYQQ6GZhfXnKuG%2BFh0MIbPBWPW4%3D--cJFRYVzgppXz2LHn--jcCALzwBvSfTWn3alXf7%2Bg%3D%3D",
+      "value": "dPMT23JOrD2n7rXV8xhbRPeBL6YmUWeV%2B5RzQT1xbAA902wwZTWE3L3SpxV33Sx3V3s9yAF8S%2FbKMQD23OsoNFHZNnm8XnESE8g95nvZAfRw%2BzRNTQXRknROo4doHVNW92MBCAm2N6ta3v3T6BncPPcEQbO12Rwj3kFptCy2AnKgeepdb4dPYNYe0k41kFF%2B2vZrSyd9iw%2BKqe%2FYVtfvMRqvI74sP562JdGstJr3VgY1oIqi0sOrOvygvXDK9yzGhUhoNf1CwW5RchmacF2nosxo4e6tANFAlntGDtJ4TzRB8DYUrNkJlQArIKTVS9Jj3ffIukLgsCI%3D--R2CNkhRAFkZg3pAf--Qxw%2BSlHGnxqTqQntAe9sng%3D%3D",
       "domain": "staging-login.newrelic.com",
       "path": "/",
       "expires": -1,
