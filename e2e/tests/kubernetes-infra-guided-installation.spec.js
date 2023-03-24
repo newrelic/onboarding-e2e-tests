@@ -1,15 +1,30 @@
-import { test, getUrl, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
+const { chromium } = require("playwright");
 
-let page
+let browser;
+let context;
+let page;
 
-test.describe('Guided installation for Kubernetes', () => {
-  test.beforeEach(async ({ browser }) => {
-     const context = await browser.newContext ({storageState : "e2e/sessions/storageState.json"})
-     page = await context.newPage();
-     await page.goto('/nr1-core/install-newrelic/installation-plan?e2e-test&');
+test.beforeEach(async () => {
+  browser = await chromium.launch();
+  context = await browser.newContext({
+    storageState: "e2e/sessions/storageState.json",
+  });
+  page = await context.newPage();
+  await page.waitForLoadState("networkidle");
+  await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
 });
 
-  test('should show steps to install Kubernetes', async ({ browser }) => {
+test.afterEach(async () => {
+  await context.close();
+});
+
+test.afterAll(async () => {
+  await browser.close();
+});
+
+
+  test('should show steps to install Kubernetes', async () => {
     test.slow();
 
     await page.getByRole('radio', { name: 'Kubernetes' }).click();
@@ -124,4 +139,3 @@ test.describe('Guided installation for Kubernetes', () => {
 
     //await page.getByRole('button', { name: 'Back' }).click();
   });
-});

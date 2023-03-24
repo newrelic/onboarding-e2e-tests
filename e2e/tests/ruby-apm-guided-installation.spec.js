@@ -1,24 +1,34 @@
 import { test, expect } from "@playwright/test";
+const { chromium } = require("playwright");
 
+let browser;
+let context;
 let page;
 
-test.describe("Ruby Guided installation", () => {
-  test.beforeEach(async ({ browser }) => {
-    const context = await browser.newContext({
-      storageState: "e2e/sessions/storageState.json"
-    });
-    page = await context.newPage();
-    await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
+test.beforeEach(async () => {
+  browser = await chromium.launch();
+  context = await browser.newContext({
+    storageState: "e2e/sessions/storageState.json",
   });
+  page = await context.newPage();
+  await page.waitForLoadState("networkidle");
+  await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
+});
 
-  test("should shows steps to install the Ruby", async ({}) => {
+test.afterEach(async () => {
+  await context.close();
+});
+
+test.afterAll(async () => {
+  await browser.close();
+});
+
+  test("should shows steps to install the Ruby", async () => {
     test.slow();
 
     await page.getByText("APM (Application Monitoring)").click();
 
     await page.getByTestId("install-newrelic.tile-ruby").click();
-
-    // await page.getByRole("radio", { name: "Ruby" }).click();
 
     await expect(page.getByText("Select your language (Ruby)")).toBeVisible();
 
@@ -189,4 +199,3 @@ test.describe("Ruby Guided installation", () => {
 
     // await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
-});

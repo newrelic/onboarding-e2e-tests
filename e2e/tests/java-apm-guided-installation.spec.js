@@ -12,6 +12,7 @@ test.beforeEach(async () => {
     storageState: "e2e/sessions/storageState.json",
   });
   page = await context.newPage();
+  await page.waitForLoadState("networkidle");
   await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
 });
 
