@@ -1,13 +1,14 @@
 # This is a basic workflow that is manually triggered
 
 name: Manual
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  schedule: ## Schedule the job to run every 15 minutes.
-    - cron: "*/15 * * * *"
+  schedule: # Schedule the job to run every 1 hour.
+    - cron: "*/60 * * * *"
 jobs:
   test:
     timeout-minutes: 60

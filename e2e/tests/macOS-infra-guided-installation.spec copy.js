@@ -23,34 +23,47 @@ test.afterAll(async () => {
   await browser.close();
 });
 
-test("should guide on steps to install Windows", async () => {
-  test.slow();
-
-  await page.getByRole("radio", { name: "Windows" }).click();
+test("should guide on steps to install macOS", async () => {
+  await page.getByRole("radio", { name: "macOS" }).click();
 
   await page
-    .getByRole("button", { name: "Select your environment (Windows)" })
+    .getByRole("button", { name: "Select your environment (macOS)" })
     .isVisible();
 
   await page.getByRole("button", { name: "Begin installation" }).click();
 
-  await page.getByText("Administrator: Windows PowerShell").isVisible();
+  await page
+    .getByText(
+      `Homebrew must be installed to run this installation.This command only 
+      supports installing the New Relic Infrastructure Agent. You will not be able to 
+      instrument on host integrations or collect logs.`
+    )
+    .isVisible();
+
+  const [homebrewDocsLink] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByRole("link", { name: "Homebrew docs" }).click(),
+  ]);
+
+  await page.waitForLoadState("networkidle");
+
+  await page.getByRole("heading", { name: "Homebrew" }).isVisible();
+
+  await homebrewDocsLink.close();
+
+  const copyCommand = page.locator("#command-content");
 
   await page
     .getByRole("button", { name: "Customize your installation" })
     .click();
+
+  await expect(copyCommand).toContainText("NEW_RELIC_API_KEY=NRAK");
 
   await page.locator("#checkbox-0").isDisabled();
 
   await page.locator("#checkbox-0").isChecked();
 
   await page.locator("#checkbox-1").check();
-
-  const copyCommand = page.locator("#command-content");
-
-  await expect(copyCommand).toContainText("-y");
-
-  await page.locator("#checkbox-2").check();
 
   await page.getByText("Enter proxy URL").isVisible();
 
@@ -65,11 +78,9 @@ test("should guide on steps to install Windows", async () => {
     "http://test-proxy:8080"
   );
 
-  await expect(copyCommand).toContainText(
-    "$env:HTTPS_PROXY='http://test-proxy:8080'"
-  );
+  await expect(copyCommand).toContainText("HTTPS_PROXY=http://test-proxy:8080");
 
-  await page.locator("#checkbox-2").uncheck();
+  await page.locator("#checkbox-1").uncheck();
 
   await page.fill('[placeholder="key:value (Remaining: 10)"]', "randomText");
 
@@ -88,11 +99,11 @@ test("should guide on steps to install Windows", async () => {
 
   await page.getByRole("button", { name: "Use a proxy" }).click();
 
-  await page.locator("#checkbox-2").isChecked();
+  await page.locator("#checkbox-1").isChecked();
 
   await page.getByText("Enter proxy URL").isVisible();
 
-  await page.locator("#checkbox-2").uncheck();
+  await page.locator("#checkbox-1").uncheck();
 
   await page.getByText("Enter proxy URL").isHidden();
 
