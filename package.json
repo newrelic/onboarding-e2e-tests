@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
     "playwright": "^1.32.0"
   }
 }
