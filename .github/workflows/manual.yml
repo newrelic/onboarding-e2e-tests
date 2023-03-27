@@ -33,11 +33,11 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action/composite@v2
-        if: always()
+      - uses: dorny/test-reporter@v1
         with:
-          files: |
-           test-results/*.xml
+          artifact: test-results            # artifact name
+          name: Test Results                # Name of the check run which will be created
+          path: '*.xml'                     # Path to test results (inside artifact .zip)
+          reporter: javascript           # Format of test results
 
       
