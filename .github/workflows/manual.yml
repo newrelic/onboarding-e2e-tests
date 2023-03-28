@@ -1,5 +1,4 @@
 # This is a basic workflow that is manually triggered
-
 name: Manual
 
 on:
@@ -39,7 +38,6 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-          
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: upload artifact
