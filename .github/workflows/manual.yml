@@ -32,7 +32,7 @@ jobs:
         run: |
           export ENV_SECRET_EMAIL=${{secrets.EMAIL}}
           export ENV_SECRET_PASSWORD=${{secrets.PASSWORD}}
-          npx playwright test
+          npx playwright test --reporter=html
       - uses: actions/upload-artifact@v3
         if: always()
         with:
