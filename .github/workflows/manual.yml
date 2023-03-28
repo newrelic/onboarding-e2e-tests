@@ -9,6 +9,10 @@ on:
     branches: [main, master]
   schedule: # Schedule the job to run every 1 hour.
     - cron: "*/60 * * * *"
+    
+permissions:
+  id-token: write
+  
 jobs:
   test:
     timeout-minutes: 60
