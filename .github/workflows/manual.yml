@@ -11,7 +11,8 @@ on:
     - cron: "*/60 * * * *"
     
 permissions:
-  id-token: write
+   pages: write
+   id-token: write
   
 jobs:
   test:
