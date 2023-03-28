@@ -1,6 +1,0 @@
-./dist
-build
-coverage
-.package-lock.json
-*.min.*
-e2e/sessions/storageState.json
