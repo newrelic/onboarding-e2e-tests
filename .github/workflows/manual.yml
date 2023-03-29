@@ -57,4 +57,10 @@ jobs:
         with:
           name: playwright-report-${{ matrix.project }}
           path: playwright-report
+      
+      - name: Publish test report
+        uses: onboarding/playwright-report@v3
+        with:
+          artifacts-dir: test-results
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         
