@@ -14,12 +14,12 @@
     "url": "https://github.com/newrelic/onboarding-e2e-tests/issues"
   },
   "homepage": "https://github.com/newrelic/onboarding-e2e-tests#readme",
-
   "devDependencies": {
     "@playwright/test": "^1.32.0"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "fs": "^0.0.1-security",
     "playwright": "^1.32.0"
   }
 }

@@ -1,3 +1,2 @@
 node_modules/
 .env
-e2e/sessions/storageState.json/
