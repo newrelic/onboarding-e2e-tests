@@ -51,9 +51,9 @@ jobs:
           export ENV_SECRET_PASSWORD=${{secrets.PASSWORD}}
           npx playwright test --project=${{ matrix.project }}
 
-      - name: 📊 Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v3
+#       - name: 📊 Upload test results
+#         if: always()
+      - uses: actions/upload-artifact@v3
         with:
           name: playwright-report-${{ matrix.project }}
           path: playwright-report
