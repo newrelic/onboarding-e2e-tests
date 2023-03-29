@@ -9,11 +9,6 @@ on:
 # Triggers the workflow every 3 hours
   schedule:
     - cron: '0 */3 * * *'
-    
-permissions:
-  contents: write
-  pages: write
-  id-token: write
   
 jobs:
   test:
@@ -45,9 +40,4 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           path: playwright-report/
-      - name: Deploy to gitGithub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
-        with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
         
