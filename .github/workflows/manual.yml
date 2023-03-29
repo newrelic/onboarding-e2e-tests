@@ -50,8 +50,6 @@ jobs:
           export ENV_SECRET_EMAIL=${{secrets.EMAIL}}
           export ENV_SECRET_PASSWORD=${{secrets.PASSWORD}}
           npx playwright test --project=${{ matrix.project }}
-        env:
-          DEBUG: pw:api,pw:browser*
 
       - name: 📊 Upload test results
         if: failure()
