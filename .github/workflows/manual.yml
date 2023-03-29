@@ -1,13 +1,14 @@
-# This is a basic workflow that is manually triggered
 name: Manual
-
 on:
-  push:
-    branches: [main, master]
   pull_request:
-    branches: [main, master]
-  schedule: # Schedule the job to run every 1 hour.
-    - cron: "*/60 * * * *"
+  push:
+    branches:
+      - main
+      - 'releases/*'
+  workflow_dispatch:
+# Triggers the workflow every 3 hours
+  schedule:
+    - cron: '0 */3 * * *'
     
 permissions:
   contents: write
