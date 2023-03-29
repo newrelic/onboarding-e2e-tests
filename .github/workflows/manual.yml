@@ -22,12 +22,6 @@ jobs:
           - project: chromium
             os: ubuntu-latest
             cache_dir: ~/.cache/ms-playwright
-          - project: firefox
-            os: ubuntu-latest
-            cache_dir: ~/.cache/ms-playwright
-          - project: webkit
-            os: macos-12
-            cache_dir: ~/Library/Caches/ms-playwright
             
     steps:
     
