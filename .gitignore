@@ -1,4 +1,4 @@
 node_modules/
 .env
 package-lock.json/
-/e2e/sessions/storageState.json/
+e2e/sessions/storageState.json/
