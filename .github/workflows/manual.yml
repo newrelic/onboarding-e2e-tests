@@ -8,7 +8,8 @@ on:
   pull_request:
     branches: [main, master]
   schedule: # Schedule the job to run every 1 hour.
-    - cron: "*/60 * * * *"
+    - cron: '*/60 * * * *'
+  workflow_dispatch:
   
 jobs:
   test:
@@ -37,7 +38,7 @@ jobs:
 #           path: playwright-report/
 #           retention-days: 30
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: e2e-test-results
           path: reports/
