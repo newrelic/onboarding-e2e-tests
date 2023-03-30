@@ -20,33 +20,54 @@ This is the **Virtuoso** package responsible for:
 5. Open a pull request.
 6. Bring the pull request to the attention of the @hero in
     [#help-virtuoso](https://app.slack.com/client/T02D34WJD/C01PTDC51K2)
+    
+## Github Actions
 
-## Get Started
+Github Woklfow is configured to trigger the tests on a push/PR to main branch. Workflow will create an Ubuntu GH container, install the dependencies, run all the tests in e2e/tests folder and upload the test results artifact which can be downloaded.
 
-1. Install the correct Node version: `nvm install`
-2. Install dependencies: `npm i`
+## Schedule
+
+Currently scheduled to run once every 60 minuites. Schedule can be edited in github/workflows/manual.yml file 
+
 
 ## Running E2E tests in local
 
-If you would like to run E2E tests locally, you will need to define env vars with your credentials.
 
-```sh
-ENV_SECRET_EMAIL='someemail@foo.com'
-ENV_SECRET_PASSWORD='mypassword#123'
-```
+### Set up
 
-Tests are run and you can trigger via 
+1. Clone the repo
+2. Install the correct Node version: `nvm install`
+3. Install dependencies: `npm i`
+
+## Running the tests
+
+Tests can be triggered via npm task, this will run all the tests in e2e/tests folder
 
 ```sh
 npx playwright test
 ```
 
-If you would like to test the scripts individually then you can test it with the following command 
+Individual test scripts can also be run with the following command 
 
 ```sh
-npx playwright test foldername/test-file-name
+npx playwright test <foldername>/<test-file-name>
 ```
- [for example the command is written in the following way - npx playwright test tests/docker-infra-guided-installation.spec.js] 
+[for example the command is written in the following way - npx playwright test tests/docker-infra-guided-installation.spec.js] 
+
+Should you want to run traces locally you can force tracing to be on with --trace on.
+```sh
+npx playwright test --trace on
+```
+
+ 
+## Enviornment Variables
+
+To run E2E tests locally, you will need to define env vars with login credentials.
+
+```sh
+ENV_SECRET_EMAIL='someemail@foo.com'
+ENV_SECRET_PASSWORD='mypassword#123'
+```
 
 ## Workers and Retries
 
