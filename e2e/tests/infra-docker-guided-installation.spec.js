@@ -26,38 +26,46 @@ test.afterAll(async () => {
 test("should guide on steps to install Docker", async () => {
   test.slow();
 
-  await page.getByRole("radio", { name: "Docker" }).click();
+  await page.getByTestId("install-newrelic.tile-docker").click();
 
   await page
     .getByRole("button", { name: "Select your environment (Docker)" })
     .isVisible();
 
-  await page.getByRole("button", { name: "Begin installation" }).click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-  await page
-    .getByText(
+  await page.waitForLoadState("networkidle");
+
+  await expect(
+    page.getByText(
       "The New Relic infrastructure agent monitors Docker on your host automatically."
     )
-    .isVisible();
+  ).toBeVisible();
 
-  await page.getByText("NRIA_LICENSE_KEY").isVisible();
+  await expect(page.getByTestId("install-newrelic.code-snippet")).toContainText(
+    " -e NRIA_LICENSE_KEY"
+  );
 
-  const [docsLink] = await Promise.all([
+  const [footerSeeOurDocs] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "See our docs" }).click(),
+    page.getByTestId("install-newrelic.docs-link").click(),
   ]);
+
+  await page.waitForLoadState("networkidle");
 
   await page
     .getByRole("heading", { name: "Guided install overview" })
     .isVisible();
 
-  await docsLink.close();
+  await footerSeeOurDocs.close();
 
-  await page.getByText("Give feedback").click();
+  await page.getByTestId("install-newrelic.feedback-link").click();
 
   await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
 
   await page.getByRole("button", { name: "Close modal" }).click();
 
-  //await page.getByRole('button', { name: 'Back' }).click();
+  await page.getByTestId("install-newrelic.footer-action-back-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });
