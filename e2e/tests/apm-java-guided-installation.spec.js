@@ -5,7 +5,6 @@ let browser;
 let context;
 let page;
 
-
 test.beforeEach(async () => {
   browser = await chromium.launch();
   context = await browser.newContext({
@@ -30,13 +29,15 @@ test.describe("Java Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: "Java" }).click();
+    await page.getByTestId("install-newrelic.tile-java").click();
 
     await expect(page.getByText("Select your language (Java)")).toBeVisible();
 
     await expect(page.getByText("Install the Java agent")).toBeVisible();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
 
     await page.waitForLoadState("networkidle");
 
@@ -81,13 +82,11 @@ test.describe("Java Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: "Java" }).click();
+    await page.getByTestId("install-newrelic.tile-java").click();
 
-    await expect(page.getByText("Select your language (Java)")).toBeVisible();
-
-    await expect(page.getByText("Install the Java agent")).toBeVisible();
-
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
 
     await page.waitForLoadState("networkidle");
 
@@ -97,7 +96,7 @@ test.describe("Java Guided installation", () => {
 
     const [gradleDocsLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("heading", { name: "Gradle" }).click(),
+      page.getByTestId("install-newrelic.java-gradle-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -110,7 +109,7 @@ test.describe("Java Guided installation", () => {
 
     const [mavenDocsLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("heading", { name: "Maven" }).click(),
+      page.getByTestId("install-newrelic.java-maven-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -123,7 +122,7 @@ test.describe("Java Guided installation", () => {
 
     const [dockerDocsLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("heading", { name: "Docker" }).click(),
+      page.getByTestId("install-newrelic.java-docker-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -146,13 +145,11 @@ test.describe("Java Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: "Java" }).click();
+    await page.getByTestId("install-newrelic.tile-java").click();
 
-    await expect(page.getByText("Select your language (Java)")).toBeVisible();
-
-    await expect(page.getByText("Install the Java agent")).toBeVisible();
-
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
 
     await page.waitForLoadState("networkidle");
 
@@ -205,8 +202,7 @@ test.describe("Java Guided installation", () => {
       page.getByText("Add your Java application data")
     ).toBeVisible();
 
-
-    await page.getByRole("button", { name: "Download" }).isDisabled();
+    await page.getByTestId("setup.download-button").isDisabled();
 
     await expect(page.getByText("You must complete step 1")).toBeVisible();
 
@@ -223,12 +219,19 @@ test.describe("Java Guided installation", () => {
 
     await seeAppNamingDoc.close();
 
-    await page.getByRole("textbox").fill("testApp");
+    const applicationNameContainer = await page.locator(
+      'div[data-test-id="setup.naming-textfield"]'
+    );
 
-    await page.getByRole("button", { name: "Download" }).isEnabled();
+    const applicationNameInput = await applicationNameContainer.locator(
+      'input[type="text"]'
+    );
+
+    await applicationNameInput.fill("testApp");
+
+    await page.getByTestId("setup.download-button").isEnabled();
 
     await page.getByText("You must complete step 1").isHidden();
-
 
     const downloadAndInstallCommand = `curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip`;
 
@@ -289,7 +292,7 @@ test.describe("Java Guided installation", () => {
 
     const [installJavaAgentDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "Install the Java agent" }).click(),
+      page.getByTestId("setup.install-java-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -300,7 +303,7 @@ test.describe("Java Guided installation", () => {
 
     const [appNamingDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "How to name your app" }).click(),
+      page.getByTestId("setup.app-naming-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -313,9 +316,7 @@ test.describe("Java Guided installation", () => {
 
     const [distributedTracingLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page
-        .getByRole("link", { name: "Introduction to distributed tracing" })
-        .click(),
+      page.getByTestId("setup.distributed-tracing-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -338,5 +339,4 @@ test.describe("Java Guided installation", () => {
       .getByTestId("install-newrelic.footer-action-back-button")
       .click();
   });
-
 });

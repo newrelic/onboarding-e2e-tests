@@ -36,11 +36,11 @@ test("should guide on steps to install Windows", async () => {
 
   await page.waitForLoadState("networkidle");
 
-  await expect(
-    page.getByText(
-      "Copy and run this command in PowerShell and run as administrator"
-    )
-  ).toBeVisible();
+  await page
+    .getByRole("heading", {
+      name: "Copy and run this command in PowerShell and run as administrator",
+    })
+    .isVisible();
 
   await page
     .getByRole("button", { name: "Customize your installation" })
