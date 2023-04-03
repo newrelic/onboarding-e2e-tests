@@ -28,25 +28,41 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
 
   await page.getByText("APM (Application Monitoring)").click();
 
-  await page.getByRole("radio", { name: "Auto-telemetry" }).click();
+  await page.getByTestId("install-newrelic.tile-kubernetes").click();
 
-  await page
-    .getByRole("button", { name: "Select your environment (Kubernetes)" })
-    .isVisible();
+  await expect(
+    page.getByText("Select your language (Kubernetes)")
+  ).toBeVisible();
 
   await expect(
     page.getByText("Install the New Relic Kubernetes integration with Pixie")
   ).toBeVisible();
 
-  await page.getByRole("button", { name: "Begin installation" }).click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
+
+  await page.waitForLoadState("networkidle");
 
   await page.getByRole("button", { name: "Continue" }).isDisabled();
 
-  await page.getByLabel("Cluster name").fill("TestCluster");
+  const clusterNameContainer = await page.locator(
+    'div[data-test-id="install-newrelic.cluster-textfield"]'
+  );
 
-  await page.getByRole("button", { name: "Continue" }).isEnabled();
+  const clusterNameInput = await clusterNameContainer.locator(
+    'input[type="text"]'
+  );
 
-  await page.getByRole("button", { name: "Continue" }).click();
+  await clusterNameInput.fill("TestCluster");
+
+  await page
+    .getByTestId("install-newrelic.footer-action-continue-button")
+    .isEnabled();
+
+  await page
+    .getByTestId("install-newrelic.footer-action-continue-button")
+    .click();
+
+  await page.waitForLoadState("networkidle");
 
   await expect(
     page.getByText("Select the additional data you want to gather")
@@ -62,7 +78,9 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
   // check entered cluster name
   await expect(page.getByText("TestCluster")).toBeVisible();
 
-  await page.getByRole("button", { name: "Continue" }).click();
+  await page
+    .getByTestId("install-newrelic.additional-data-continue-button")
+    .click();
 
   await expect(
     page.getByText(
@@ -86,7 +104,9 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
     `"pixie-chart.clusterName":"TestCluster"`
   );
 
-  await page.getByRole("button", { name: "Continue" }).click();
+  await page
+    .getByTestId("install-newrelic.install-methods-continue-button")
+    .click();
 
   await expect(page.getByText("Listening for data")).toBeVisible();
 
@@ -94,19 +114,23 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
     page.getByText("Pixie: get ready for next-gen K8s observability!")
   ).toBeVisible();
 
-  await page.getByRole("button", { name: "Back" }).click();
+  await page.getByTestId("install-newrelic.lastpage-back-button").click();
 
   await page.waitForLoadState("networkidle");
 
-  await page.getByRole("button", { name: "Back" }).click();
+  await page
+    .getByTestId("install-newrelic.install-methods-back-button")
+    .click();
 
   await page.waitForLoadState("networkidle");
 
-  await page.getByRole("button", { name: "Back" }).click();
+  await page
+    .getByTestId("install-newrelic.additional-data-back-button")
+    .click();
 
-  const [docsLink] = await Promise.all([
+  const [footerSeeOurDocs] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "See our docs" }).click(),
+    page.getByTestId("install-newrelic.docs-link").click(),
   ]);
 
   await page.waitForLoadState("networkidle");
@@ -117,12 +141,15 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
     })
     .isVisible();
 
-  await docsLink.close();
+  await footerSeeOurDocs.close();
 
-  await page.getByText("Give feedback").click();
+  await page.getByTestId("install-newrelic.feedback-link").click();
 
   await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
 
   await page.getByRole("button", { name: "Close modal" }).click();
 
+  await page.getByTestId("install-newrelic.footer-action-back-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });

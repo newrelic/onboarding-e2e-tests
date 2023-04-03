@@ -28,15 +28,15 @@ test("should shows steps to install the Python", async () => {
 
   await page.getByText("APM (Application Monitoring)").click();
 
-  await page.getByRole("radio", { name: "Python" }).click();
+  await page.getByTestId("install-newrelic.tile-python").click();
 
-  await page
-    .getByRole("button", { name: "Select your language (Python)" })
-    .isVisible();
+  await expect(page.getByText("Select your language (Python)")).toBeVisible();
 
   await expect(page.getByText("Install the Python agent")).toBeVisible();
 
-  await page.getByRole("button", { name: "Begin installation" }).click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
+
+  await page.waitForLoadState("networkidle");
 
   await expect(
     page.getByText("Add your Python application data")
@@ -59,15 +59,23 @@ test("should shows steps to install the Python", async () => {
     page.getByText("Download your custom configuration file")
   ).toBeVisible();
 
-  await page.getByRole("button", { name: "Download" }).isDisabled();
+  await page.getByTestId("setup.download-button").isDisabled();
 
   await expect(page.getByText("You must complete step 1")).toBeVisible();
 
-  await page.getByRole("textbox").fill("testApp");
+  const applicationNameContainer = await page.locator(
+    'div[data-test-id="setup.naming-textfield"]'
+  );
+
+  const applicationNameInput = await applicationNameContainer.locator(
+    'input[type="text"]'
+  );
+
+  await applicationNameInput.fill("testApp");
 
   await expect(page.getByText("You must complete steps 1")).toBeHidden();
 
-  await page.getByRole("button", { name: "Download" }).isEnabled();
+  await page.getByTestId("setup.download-button").isEnabled();
 
   await expect(
     page.getByText(
@@ -105,7 +113,7 @@ test("should shows steps to install the Python", async () => {
 
   const [pythonInstallationDoc] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "Install the Python agent" }).click(),
+    await page.getByTestId("setup.install-python-link").click(),
   ]);
 
   await page.waitForLoadState("networkidle");
@@ -120,9 +128,8 @@ test("should shows steps to install the Python", async () => {
 
   const [pythonInstallationOnDockerDoc] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "Install on Docker" }).click(),
+    await page.getByTestId("setup.install-docker-link").click(),
   ]);
-
   await page.waitForLoadState("networkidle");
 
   await pythonInstallationOnDockerDoc
@@ -135,7 +142,7 @@ test("should shows steps to install the Python", async () => {
 
   const [appNamingDoc] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "How to name your app" }).click(),
+    await page.getByTestId("setup.app-naming-link").click(),
   ]);
 
   await page.waitForLoadState("networkidle");
@@ -150,9 +157,7 @@ test("should shows steps to install the Python", async () => {
 
   const [distributedTracingLink] = await Promise.all([
     page.waitForEvent("popup"),
-    page
-      .getByRole("link", { name: "Introduction to distributed tracing" })
-      .click(),
+    await page.getByTestId("setup.distributed-tracing-link").click(),
   ]);
 
   await distributedTracingLink
@@ -165,7 +170,7 @@ test("should shows steps to install the Python", async () => {
 
   const [compatibilityDoc] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "Compatibility and requirements" }).click(),
+    await page.getByTestId("setup.compatibility-requirement-link").click(),
   ]);
 
   await compatibilityDoc
@@ -186,5 +191,5 @@ test("should shows steps to install the Python", async () => {
 
   await page.getByTestId("platform.stacked-view-close-button").click();
 
-  await page.getByRole("button", { name: "Back" }).click();
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });

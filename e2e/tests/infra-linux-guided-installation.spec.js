@@ -24,97 +24,141 @@ test.afterAll(async () => {
 });
 
 test("should guide on steps to install Linux", async () => {
-  await page.getByRole("radio", { name: "Linux" }).click();
+  test.slow();
+
+  await page.getByTestId("install-newrelic.tile-linux").click();
 
   await page
     .getByRole("button", { name: "Select your environment (Linux)" })
     .isVisible();
 
-  await page.getByRole("button", { name: "Begin installation" }).click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-  const copyCommand = page.locator("#command-content");
+  await page.waitForLoadState("networkidle");
 
   await page
     .getByRole("button", { name: "Customize your installation" })
     .click();
 
-  await expect(copyCommand).toContainText("NEW_RELIC_API_KEY=NRAK");
+  const linuxCodeSnippet = page.locator(
+    "data-test-id=install-newrelic.code-snippet"
+  );
 
-  await page.locator("#checkbox-0").isDisabled();
+  await expect(linuxCodeSnippet).toContainText("NEW_RELIC_API_KEY=NRAK");
 
-  await page.locator("#checkbox-0").isChecked();
+  const customizationCLIOption = await page.locator(
+    'div[data-test-id="install-newrelic.cli-checkbox"]'
+  );
 
-  await page.locator("#checkbox-1").check();
+  const customizationCLICheckbox = await customizationCLIOption.locator(
+    'input[type="checkbox"]'
+  );
 
-  await expect(copyCommand).toContainText("-y");
+  await customizationCLICheckbox.isChecked();
 
-  await page.fill('[placeholder="key:value (Remaining: 10)"]', "randomText");
+  await customizationCLICheckbox.isDisabled();
 
-  await page.getByPlaceholder("key:value (Remaining: 10)").press("Enter");
+  const customizationPromptOption = await page.locator(
+    'div[data-test-id="install-newrelic.prompt-checkbox"]'
+  );
+
+  await customizationPromptOption.locator('input[type="checkbox"]').check();
+
+  await expect(linuxCodeSnippet).toContainText("-y");
+
+  const customizationTags = await page.locator(
+    'div[data-test-id="install-newrelic.tag-input"]'
+  );
+
+  const tagInput = await customizationTags.locator('input[type="text"]');
+
+  await tagInput.fill("randomText");
+
+  await tagInput.press("Enter");
 
   await expect(page.getByText("Tag contains invalid character")).toBeVisible();
 
-  // clear the input field
-  await page.getByPlaceholder("key:value (Remaining: 10)").fill("");
+  await tagInput.fill("");
 
-  await page.fill('[placeholder="key:value (Remaining: 10)"]', "Test:5");
+  await tagInput.fill("Test:5");
 
-  await page.getByPlaceholder("key:value (Remaining: 10)").press("Enter");
+  await tagInput.press("Enter");
 
-  await expect(copyCommand).toContainText("--tag Test:5");
+  await expect(page.getByText("Tag contains invalid character")).toBeHidden();
 
-  await page.getByRole("button", { name: "Use a proxy" }).click();
+  await expect(linuxCodeSnippet).toContainText("--tag Test:5");
 
-  expect(await page.locator("#checkbox-2").isChecked()).toBeTruthy();
+  const customizationProxyOption = await page.locator(
+    'div[data-test-id="install-newrelic.proxy-checkbox"]'
+  );
+
+  await customizationProxyOption.locator('input[type="checkbox"]').check();
 
   await page.getByRole("div", { name: "Enter proxy URL" }).isVisible();
 
-  await page.fill('[placeholder="http://my-proxy:3128"]', "randomText");
+  const customizationProxyInput = await page.locator(
+    'div[data-test-id="install-newrelic.proxy-input"]'
+  );
+
+  const proxyTextField = await customizationProxyInput.locator(
+    'input[type="text"]'
+  );
+
+  await proxyTextField.fill("randomText");
 
   await expect(page.getByText("Invalid URL")).toBeVisible();
 
-  await page.getByPlaceholder("http://my-proxy:3128").fill("");
+  //clear the text field
+  await proxyTextField.fill("");
 
-  await page.fill(
-    '[placeholder="http://my-proxy:3128"]',
-    "http://test-proxy:8080"
+  await proxyTextField.fill("http://test-proxy:8080");
+
+  await expect(linuxCodeSnippet).toContainText(
+    "HTTPS_PROXY=http://test-proxy:8080"
   );
 
-  await expect(copyCommand).toContainText("HTTPS_PROXY=http://test-proxy:8080");
+  await customizationProxyOption.locator('input[type="checkbox"]').uncheck();
 
-  await page.locator("#checkbox-2").uncheck();
+  await page.getByRole("button", { name: "Use a proxy" }).click();
 
-  // // using this identifier as test-id is unavailable for multiple elements with text "See our docs"
-  // const [docsLink] = await Promise.all([
-  //   page.waitForEvent("popup"),
-  //   page
-  //     .locator(
-  //       'div[role="status"]:has-text("We need access to a specific set of endpoints for this installation. Make sure y")'
-  //     )
-  //     .getByRole("link", { name: "See our docs" })
-  //     .click(),
-  // ]);
+  await customizationProxyOption.locator('input[type="checkbox"]').isChecked();
 
-  // await page.getByRole("heading", { name: "Network traffic" }).isVisible();
+  const accessPointsInfo = await page.locator(
+    `div[data-test-id="install-newrelic.network-traffic-doc"]`
+  );
+  const networkTrafficDoc = await accessPointsInfo.locator("a");
 
-  // await docsLink.close();
-
-  const [docsLink2] = await Promise.all([
+  const [docsLink] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "See our docs" }).nth(1).click(),
+    await networkTrafficDoc.click(),
   ]);
+
+  await page.waitForLoadState("networkidle");
+
+  await page.getByRole("heading", { name: "Network traffic" }).isVisible();
+
+  await docsLink.close();
+
+  const [footerSeeOurDocs] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByTestId("install-newrelic.docs-link").click(),
+  ]);
+
+  await page.waitForLoadState("networkidle");
 
   await page
     .getByRole("heading", { name: "Guided install overview" })
     .isVisible();
 
-  await docsLink2.close();
+  await footerSeeOurDocs.close();
 
-  await page.getByText("Give feedback").click();
+  await page.getByTestId("install-newrelic.feedback-link").click();
 
   await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
 
   await page.getByRole("button", { name: "Close modal" }).click();
 
-  await page.getByRole("button", { name: "Back" }).nth(1).click();
+  await page.getByTestId("install-newrelic.footer-action-back-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });

@@ -24,25 +24,35 @@ test.afterAll(async () => {
 });
 
 test("should guide on steps to install macOS", async () => {
-  await page.getByRole("radio", { name: "macOS" }).click();
+  test.slow();
+
+  await page.getByTestId("install-newrelic.tile-macos").click();
 
   await page
     .getByRole("button", { name: "Select your environment (macOS)" })
     .isVisible();
 
-  await page.getByRole("button", { name: "Begin installation" }).click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-  await page
-    .getByText(
-      `Homebrew must be installed to run this installation.This command only 
-      supports installing the New Relic Infrastructure Agent. You will not be able to 
-      instrument on host integrations or collect logs.`
-    )
-    .isVisible();
+  await page.waitForLoadState("networkidle");
+
+  // const homeBrewInfoInstallationInfo =
+  //   "Homebrew must be installed to run this installation.This command only supports installing the New Relic Infrastructure Agent. You will not be able to instrument on host integrations or collect logs.";
+
+  // await expect(
+  //   page.getByTestId("install-newrelic.homebrew-docs")
+  // ).toContainText(homeBrewInfoInstallationInfo);
+
+  // await expect(page.getByText(homeBrewInfoInstallationInfo)).toBeVisible();
+
+  const homebrewInstallationDoc = await page.locator(
+    `div[data-test-id="install-newrelic.homebrew-docs"]`
+  );
+  const installationDoc = await homebrewInstallationDoc.locator("a");
 
   const [homebrewDocsLink] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "Homebrew docs" }).click(),
+    await installationDoc.click(),
   ]);
 
   await page.waitForLoadState("networkidle");
@@ -51,93 +61,121 @@ test("should guide on steps to install macOS", async () => {
 
   await homebrewDocsLink.close();
 
-  const copyCommand = page.locator("#command-content");
-
   await page
     .getByRole("button", { name: "Customize your installation" })
     .click();
 
-  await expect(copyCommand).toContainText("NEW_RELIC_API_KEY=NRAK");
+  const macOSCodeSnippet = page.locator(
+    "data-test-id=install-newrelic.code-snippet"
+  );
 
-  await page.locator("#checkbox-0").isDisabled();
+  await expect(macOSCodeSnippet).toContainText(" sudo NEW_RELIC_API_KEY=NRAK");
 
-  await page.locator("#checkbox-0").isChecked();
+  const customizationCLIOption = await page.locator(
+    'div[data-test-id="install-newrelic.cli-checkbox"]'
+  );
 
-  await page.locator("#checkbox-1").check();
+  const customizationCLICheckbox = await customizationCLIOption.locator(
+    'input[type="checkbox"]'
+  );
 
-  await page.getByText("Enter proxy URL").isVisible();
+  await customizationCLICheckbox.isChecked();
 
-  await page.fill('[placeholder="http://my-proxy:3128"]', "randomText");
+  await customizationCLICheckbox.isDisabled();
+
+  const customizationProxyOption = await page.locator(
+    'div[data-test-id="install-newrelic.proxy-checkbox"]'
+  );
+
+  await customizationProxyOption.locator('input[type="checkbox"]').check();
+
+  await page.getByRole("div", { name: "Enter proxy URL" }).isVisible();
+
+  const customizationProxyInput = await page.locator(
+    'div[data-test-id="install-newrelic.proxy-input"]'
+  );
+
+  const proxyTextField = await customizationProxyInput.locator(
+    'input[type="text"]'
+  );
+
+  await proxyTextField.fill("randomText");
 
   await expect(page.getByText("Invalid URL")).toBeVisible();
 
-  await page.getByPlaceholder("http://my-proxy:3128").fill("");
+  //clear the text field
+  await proxyTextField.fill("");
 
-  await page.fill(
-    '[placeholder="http://my-proxy:3128"]',
-    "http://test-proxy:8080"
+  await proxyTextField.fill("http://test-proxy:8080");
+
+  await expect(macOSCodeSnippet).toContainText(
+    "HTTPS_PROXY=http://test-proxy:8080"
   );
 
-  await expect(copyCommand).toContainText("HTTPS_PROXY=http://test-proxy:8080");
+  await customizationProxyOption.locator('input[type="checkbox"]').uncheck();
 
-  await page.locator("#checkbox-1").uncheck();
+  const customizationTags = await page.locator(
+    'div[data-test-id="install-newrelic.tag-input"]'
+  );
 
-  await page.fill('[placeholder="key:value (Remaining: 10)"]', "randomText");
+  const tagInput = await customizationTags.locator('input[type="text"]');
 
-  await page.getByPlaceholder("key:value (Remaining: 10)").press("Enter");
+  await tagInput.fill("randomText");
+
+  await tagInput.press("Enter");
 
   await expect(page.getByText("Tag contains invalid character")).toBeVisible();
 
-  // clear the input field
-  await page.getByPlaceholder("key:value (Remaining: 10)").fill("");
+  await tagInput.fill("");
 
-  await page.fill('[placeholder="key:value (Remaining: 10)"]', "Test:5");
+  await tagInput.fill("Test:5");
 
-  await page.getByPlaceholder("key:value (Remaining: 10)").press("Enter");
+  await tagInput.press("Enter");
 
-  await expect(copyCommand).toContainText("--tag Test:5");
+  await expect(page.getByText("Tag contains invalid character")).toBeHidden();
 
-  await page.getByRole("button", { name: "Use a proxy" }).click();
+  await expect(macOSCodeSnippet).toContainText("--tag Test:5");
 
-  await page.locator("#checkbox-1").isChecked();
+  const accessPointsInfo = await page.locator(
+    `div[data-test-id="install-newrelic.network-traffic-doc"]`
+  );
+  const networkTrafficDoc = await accessPointsInfo.locator("a");
 
-  await page.getByText("Enter proxy URL").isVisible();
-
-  await page.locator("#checkbox-1").uncheck();
-
-  await page.getByText("Enter proxy URL").isHidden();
-
-  // using this identifier as test-id is unavailable for multiple elements with text "See our docs"
   const [docsLink] = await Promise.all([
     page.waitForEvent("popup"),
-    page
-      .locator(
-        'div[role="status"]:has-text("We need access to a specific set of endpoints for this installation. Make sure y")'
-      )
-      .getByRole("link", { name: "See our docs" })
-      .click(),
+    await networkTrafficDoc.click(),
   ]);
+
+  await page.waitForLoadState("networkidle");
 
   await page.getByRole("heading", { name: "Network traffic" }).isVisible();
 
   await docsLink.close();
 
-  const [docsLink2] = await Promise.all([
+  await page.getByRole("button", { name: "Use a proxy" }).click();
+
+  await customizationProxyOption.locator('input[type="checkbox"]').isChecked();
+
+  const [footerSeeOurDocs] = await Promise.all([
     page.waitForEvent("popup"),
-    page.getByRole("link", { name: "See our docs" }).nth(1).click(),
+    page.getByTestId("install-newrelic.docs-link").click(),
   ]);
+
+  await page.waitForLoadState("networkidle");
 
   await page
     .getByRole("heading", { name: "Guided install overview" })
     .isVisible();
 
-  await docsLink2.close();
+  await footerSeeOurDocs.close();
 
-  await page.getByText("Give feedback").click();
+  await page.getByTestId("install-newrelic.feedback-link").click();
 
   await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
 
   await page.getByRole("button", { name: "Close modal" }).click();
 
-  await page.getByRole("button", { name: "Back" }).nth(1).click();
+  await page.getByTestId("install-newrelic.footer-action-back-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });

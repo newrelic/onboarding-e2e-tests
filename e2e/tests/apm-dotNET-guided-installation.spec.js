@@ -29,15 +29,17 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
+    await page.getByTestId("install-newrelic.tile-dotnet").click();
 
-    await page
-      .getByRole("button", { name: "Select your language (.NET)" })
-      .isVisible();
+    await expect(page.getByText("Select your language (.NET)")).toBeVisible();
 
     await expect(page.getByText("Install the .NET agent")).toBeVisible();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
+
+    await page.waitForLoadState("networkidle");
 
     await page
       .getByRole("heading", {
@@ -55,24 +57,24 @@ test.describe(".NET Guided installation", () => {
       .getByRole("heading", { name: "On a Windows host without IIS" })
       .isVisible();
 
-    await page.getByRole("heading", { name: "Docker" }).isVisible();
+    await page.getByRole("heading", { name: "Docker for Linux" }).isVisible();
 
-    await page.getByRole("heading", { name: "Azure Web Apps" }).isVisible();
+    await page.getByRole("heading", { name: "Docker for Windows" }).isVisible();
 
     await page.getByRole("heading", { name: "AWS Lambda" }).isVisible();
 
-    const [docsLink] = await Promise.all([
+    const [footerSeeOurDocs] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs" }).click(),
+      page.getByTestId("install-newrelic.docs-link").click(),
     ]);
 
     await page
       .getByRole("heading", { name: "Guided install overview" })
       .isVisible();
 
-    await docsLink.close();
+    await footerSeeOurDocs.close();
 
-    await page.getByText("Give feedback").click();
+    await page.getByTestId("install-newrelic.feedback-link").click();
 
     await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
 
@@ -86,9 +88,13 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
+    await page.getByTestId("install-newrelic.tile-dotnet").click();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
+
+    await page.waitForLoadState("networkidle");
 
     await page.getByRole("heading", { name: "On a Linux host" }).click();
 
@@ -144,9 +150,17 @@ test.describe(".NET Guided installation", () => {
 
     await seeAppNamingDoc.close();
 
-    await page.getByRole("button", { name: "See your data" }).isDisabled();
+    await page.getByTestId("setup.see-your-data-button").isDisabled();
 
-    await page.getByRole("textbox").fill("testApp");
+    const applicationNameContainer = await page.locator(
+      'div[data-test-id="setup.naming-textfield"]'
+    );
+
+    const applicationNameInput = await applicationNameContainer.locator(
+      'input[type="text"]'
+    );
+
+    await applicationNameInput.fill("testApp");
 
     await page.getByLabel("apt").check();
 
@@ -154,7 +168,7 @@ test.describe(".NET Guided installation", () => {
       .getByText("sudo apt-get install newrelic-dotnet-agent")
       .isVisible();
 
-    await page.getByRole("button", { name: "See your data" }).isEnabled();
+    await page.getByTestId("setup.see-your-data-button").isEnabled();
 
     await expect(
       page.getByText(
@@ -174,7 +188,7 @@ test.describe(".NET Guided installation", () => {
 
     const [agentInstallationDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "Install the .NET agent" }).click(),
+      page.getByTestId("setup.install-dotnet-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -187,7 +201,7 @@ test.describe(".NET Guided installation", () => {
 
     const [agentNamingDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "How to name your app" }).click(),
+      page.getByTestId("setup.app-naming-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -202,9 +216,7 @@ test.describe(".NET Guided installation", () => {
 
     const [distributedTracingLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page
-        .getByRole("link", { name: "Introduction to distributed tracing" })
-        .click(),
+      page.getByTestId("setup.distributed-tracing-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -234,6 +246,8 @@ test.describe(".NET Guided installation", () => {
     await page
       .getByTestId("install-newrelic.footer-action-back-button")
       .click();
+
+    await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
   test("should guide steps to install the .NET agent On a Windows host with IIS", async () => {
@@ -241,9 +255,11 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
+    await page.getByTestId("install-newrelic.tile-dotnet").click();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
 
     await page
       .getByRole("heading", { name: "On a Windows host with IIS" })
@@ -260,6 +276,24 @@ test.describe(".NET Guided installation", () => {
         "To allow data through your firewall, set the HTTPS_PROXY environment variable to your proxy’s URL before you run the command below."
       )
     ).toBeVisible();
+
+    const paragraphElement = await page.locator(
+      `div[data-test-id="install-newrelic.proxy-doc"]`
+    );
+    const linkElement = await paragraphElement.locator("a");
+
+    const [httpsProxyDoc] = await Promise.all([
+      page.waitForEvent("popup"),
+      await linkElement.click(),
+    ]);
+
+    await page.waitForLoadState("networkidle");
+
+    await page
+      .getByText("The proxy element supports the following attributes:")
+      .isVisible();
+
+    await httpsProxyDoc.close();
 
     await expect(
       page.getByTestId("install-newrelic.code-snippet")
@@ -311,8 +345,15 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByRole("button", { name: "See your data" }).isDisabled();
 
-    /* need to define test-id */
-    await page.getByRole("textbox").fill("testApp");
+    const applicationNameContainer = await page.locator(
+      'div[data-test-id="setup.naming-textfield"]'
+    );
+
+    const applicationNameInput = await applicationNameContainer.locator(
+      'input[type="text"]'
+    );
+
+    await applicationNameInput.fill("testApp");
 
     await page.getByLabel("apt").check();
 
@@ -320,7 +361,7 @@ test.describe(".NET Guided installation", () => {
       .getByText("sudo apt-get install newrelic-dotnet-agent")
       .isVisible();
 
-    await page.getByRole("button", { name: "See your data" }).isEnabled();
+    await page.getByTestId("setup.see-your-data-button").isEnabled();
 
     await expect(
       page.getByText(
@@ -340,7 +381,7 @@ test.describe(".NET Guided installation", () => {
 
     const [agentInstallationDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "Install the .NET agent" }).click(),
+      page.getByTestId("setup.install-dotnet-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -353,7 +394,7 @@ test.describe(".NET Guided installation", () => {
 
     const [agentNamingDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "How to name your app" }).click(),
+      page.getByTestId("setup.app-naming-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -368,9 +409,7 @@ test.describe(".NET Guided installation", () => {
 
     const [distributedTracingLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page
-        .getByRole("link", { name: "Introduction to distributed tracing" })
-        .click(),
+      page.getByTestId("setup.distributed-tracing-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -392,6 +431,8 @@ test.describe(".NET Guided installation", () => {
     await page
       .getByTestId("install-newrelic.footer-action-back-button")
       .click();
+
+    await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
   test("should guide steps to install the .NET agent On a Windows host without IIS", async () => {
@@ -399,9 +440,11 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
+    await page.getByTestId("install-newrelic.tile-dotnet").click();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId("install-newrelic.button-begin-installation")
+      .click();
 
     await page
       .getByRole("heading", { name: "On a Windows host without IIS" })
@@ -425,10 +468,17 @@ test.describe(".NET Guided installation", () => {
 
     await seeAppNamingDoc.close();
 
-    await page.getByRole("button", { name: "See your data" }).isDisabled();
+    await page.getByTestId("setup.see-your-data-button").isDisabled();
 
-    /* need to define test-id */
-    await page.getByRole("textbox").fill("testApp");
+    const applicationNameContainer = await page.locator(
+      'div[data-test-id="setup.naming-textfield"]'
+    );
+
+    const applicationNameInput = await applicationNameContainer.locator(
+      'input[type="text"]'
+    );
+
+    await applicationNameInput.fill("testApp");
 
     await page.getByLabel("apt").check();
 
@@ -436,7 +486,7 @@ test.describe(".NET Guided installation", () => {
       .getByText("sudo apt-get install newrelic-dotnet-agent")
       .isVisible();
 
-    await page.getByRole("button", { name: "See your data" }).isEnabled();
+    await page.getByTestId("setup.see-your-data-button").isEnabled();
 
     await expect(
       page.getByText(
@@ -456,7 +506,7 @@ test.describe(".NET Guided installation", () => {
 
     const [agentInstallationDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "Install the .NET agent" }).click(),
+      page.getByTestId("setup.install-dotnet-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -469,7 +519,7 @@ test.describe(".NET Guided installation", () => {
 
     const [agentNamingDoc] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByRole("link", { name: "How to name your app" }).click(),
+      page.getByTestId("setup.app-naming-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -484,9 +534,7 @@ test.describe(".NET Guided installation", () => {
 
     const [distributedTracingLink] = await Promise.all([
       page.waitForEvent("popup"),
-      page
-        .getByRole("link", { name: "Introduction to distributed tracing" })
-        .click(),
+      page.getByTestId("setup.distributed-tracing-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -506,77 +554,70 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
 
     await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+
+    await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
   test("should guide steps to install the .NET agent on Docker for Linux ", async () => {
     test.slow();
 
     await page.getByText("APM (Application Monitoring)").click();
+   
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
-
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId('install-newrelic.button-begin-installation')
+      .click();
 
     const [dotnetDockerLinux] = await Promise.all([
       page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.dotnet-docker-link").click(),
+      page.getByTestId("install-newrelic.docker-linux-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
 
-    const queryParamsLinux = {
-      deployment: "linux",
-    };
-    const queryStringLinux = Object.keys(queryParamsLinux)
-      .map((key) => `${key}=${queryParamsLinux[key]}`)
-      .join("&");
-
-    await dotnetDockerLinux.goto(`https://docs.newrelic.com/install/dotnet/?${queryStringLinux}`);
-
-    const urlLinux = await dotnetDockerLinux.url();
-
-    expect(urlLinux).toContain("deployment=linux");
+    await page
+    .getByRole('heading', {
+      name: 'Monitor your .NET app',
+    })
+    .isVisible();
 
     await dotnetDockerLinux.close();
-    
+
     await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+
+    await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the .NET agent on Docker for windows ", async () => {
+  test('should guide steps to install the .NET agent on Docker for Linux', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByText('APM (Application Monitoring)').click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
-
-    await page.waitForLoadState("networkidle");
+    await page
+      .getByTestId('install-newrelic.button-begin-installation')
+      .click();
 
     const [dotnetDockerWindows] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("heading", { name: "Docker for Windows" }).click(),
+      page.waitForEvent('popup'),
+      await page.getByTestId('install-newrelic.docker-windows-link').click(),
     ]);
 
-    await dotnetDockerWindows.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
-    const queryParamsWindows = {
-      deployment: "windowsInstall",
-    };
-
-    const queryStringWindows = Object.keys(queryParamsWindows)
-      .map((key) => `${key}=${queryParamsWindows[key]}`)
-      .join("&");
-
-    await dotnetDockerWindows.goto(`https://docs.newrelic.com/install/dotnet/?${queryStringWindows}`);
-
-    const urlWindows = await dotnetDockerWindows.url();
-
-    expect(urlWindows).toContain("deployment=windowsInstall");
+    await page
+      .getByRole('heading', {
+        name: 'Monitor your .NET app',
+      })
+      .isVisible();
 
     await dotnetDockerWindows.close();
-    
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+
+    await page.getByTestId('install-newrelic.apm-footer-back-button').click();
+
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 
   test("should guide steps to install the .NET agent on Azure Web Apps", async () => {
@@ -588,21 +629,23 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByRole("button", { name: "Begin installation" }).click();
 
-      const [azureLink] = await Promise.all([
-        page.waitForEvent("popup"),
-        page.getByRole("heading", { name: "Azure Web Apps" }).click(),
-      ]);
-  
-      await azureLink.waitForLoadState("networkidle");
-  
-      await azureLink
-        .getByRole("heading", {
-          name: "Install the .NET agent on Azure Web Apps",
-        })
-        .isVisible();
-  
-      await azureLink.close();
-  
-      await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+    const [azureLink] = await Promise.all([
+      page.waitForEvent("popup"),
+      await page.getByTestId('install-newrelic.dotnet-azure-link').click(),
+    ]);
+
+    await azureLink.waitForLoadState("networkidle");
+
+    await azureLink
+      .getByRole("heading", {
+        name: "Install the .NET agent on Azure Web Apps",
+      })
+      .isVisible();
+
+    await azureLink.close();
+
+    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 });

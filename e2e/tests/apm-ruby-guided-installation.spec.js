@@ -23,179 +23,185 @@ test.afterAll(async () => {
   await browser.close();
 });
 
-  test("should shows steps to install the Ruby", async () => {
-    test.slow();
+test("should shows steps to install the Ruby", async () => {
+  test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+  await page.getByText("APM (Application Monitoring)").click();
 
-    await page.getByTestId("install-newrelic.tile-ruby").click();
+  await page.getByTestId("install-newrelic.tile-ruby").click();
 
-    await expect(page.getByText("Select your language (Ruby)")).toBeVisible();
+  await expect(page.getByText("Select your language (Ruby)")).toBeVisible();
 
-    await expect(page.getByText("Install the Ruby agent")).toBeVisible();
+  await expect(page.getByText("Install the Ruby agent")).toBeVisible();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-    await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("networkidle");
 
-    await expect(
-      page.getByText("Add your Ruby application data")
-    ).toBeVisible();
+  await expect(page.getByText("Add your Ruby application data")).toBeVisible();
 
-    await expect(
-      page.getByText(
-        "Install the APM Ruby agent to monitor your Ruby application. Follow these steps to get your data into New Relic."
-      )
-    ).toBeVisible();
+  await expect(
+    page.getByText(
+      "Install the APM Ruby agent to monitor your Ruby application. Follow these steps to get your data into New Relic."
+    )
+  ).toBeVisible();
 
-    const [seeAppNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs on naming" }).click(),
-    ]);
+  const [seeAppNamingDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByRole("link", { name: "See our docs on naming" }).click(),
+  ]);
 
-    await page.waitForLoadState("networkidle");
+  await page.waitForLoadState("networkidle");
 
-    await page
-      .getByText("Name or change the name of your application")
-      .isVisible();
+  await page
+    .getByText("Name or change the name of your application")
+    .isVisible();
 
-    await seeAppNamingDoc.close();
+  await seeAppNamingDoc.close();
 
-    await expect(
-      page.getByText("Download your custom configuration file")
-    ).toBeVisible();
+  await expect(
+    page.getByText("Download your custom configuration file")
+  ).toBeVisible();
 
-    await page.getByRole("button", { name: "Download" }).isDisabled();
+  await page.getByTestId("setup.download-button").isDisabled();
 
-    await expect(
-      page.getByText("You must complete steps  1, and 2")
-    ).toBeVisible();
+  await expect(
+    page.getByText("You must complete steps  1, and 2")
+  ).toBeVisible();
 
-    await page.getByRole("textbox").fill("testApp");
+  const applicationNameContainer = await page.locator(
+    'div[data-test-id="setup.naming-textfield"]'
+  );
 
-    await expect(
-      page.getByText("You must complete steps  1, and 2")
-    ).toBeHidden();
+  const applicationNameInput = await applicationNameContainer.locator(
+    'input[type="text"]'
+  );
 
-    await page.getByRole("button", { name: "Download" }).isDisabled();
+  await applicationNameInput.fill("testApp");
 
-    await expect(page.getByText("You must complete step 2")).toBeVisible();
+  await expect(
+    page.getByText("You must complete steps  1, and 2")
+  ).toBeHidden();
 
-    await page
-      .getByRole("heading", { name: "Are you using Bundler?" })
-      .isVisible();
+  await page.getByTestId("setup.download-button").isDisabled();
 
-    await page.getByLabel("Yes, I’m using Bundler").check();
+  await expect(page.getByText("You must complete step 2")).toBeVisible();
 
-    await page.getByRole("button", { name: "Download" }).isEnabled();
+  await page
+    .getByRole("heading", { name: "Are you using Bundler?" })
+    .isVisible();
 
-    await expect(page.getByText("You must complete step 2")).toBeHidden();
+  await page.getByLabel("Yes, I’m using Bundler").check();
 
-    await expect(
-      page.getByText("Add the agent gem to your Gemfile:")
-    ).toBeVisible();
+  await page.getByRole("button", { name: "Download" }).isEnabled();
 
-    await expect(page.getByText("gem 'newrelic_rpm'")).toBeVisible();
+  await expect(page.getByText("You must complete step 2")).toBeHidden();
 
-    await expect(
-      page.getByText("Make sure it gets added to your Bundle Gemfile:")
-    ).toBeVisible();
+  await expect(
+    page.getByText("Add the agent gem to your Gemfile:")
+  ).toBeVisible();
 
-    await expect(page.getByText("bundle install")).toBeVisible();
+  await expect(page.getByText("gem 'newrelic_rpm'")).toBeVisible();
 
-    await page.getByLabel("No, I'm not using Bundler").check();
+  await expect(
+    page.getByText("Make sure it gets added to your Bundle Gemfile:")
+  ).toBeVisible();
 
-    await expect(page.getByText("Install the agent using gem")).toBeVisible();
+  await expect(page.getByText("bundle install")).toBeVisible();
 
-    await expect(page.getByText("gem install newrelic_rpm")).toBeVisible();
+  await page.getByLabel("No, I'm not using Bundler").check();
 
-    await expect(
-      page.getByText("Under your application’s require directive, add:")
-    ).toBeVisible();
+  await expect(page.getByText("Install the agent using gem")).toBeVisible();
 
-    await expect(page.getByText("require 'newrelic_rpm'")).toBeVisible();
+  await expect(page.getByText("gem install newrelic_rpm")).toBeVisible();
 
-    await expect(
-      page.getByText(
-        "Copy this command into your host to enable infrastructure and logs metrics."
-      )
-    ).toBeVisible();
+  await expect(
+    page.getByText("Under your application’s require directive, add:")
+  ).toBeVisible();
 
-    /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+  await expect(page.getByText("require 'newrelic_rpm'")).toBeVisible();
 
-    await page.getByRole("tab", { name: "Windows" }).click();
+  await expect(
+    page.getByText(
+      "Copy this command into your host to enable infrastructure and logs metrics."
+    )
+  ).toBeVisible();
 
-    /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+  /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
 
-    await page.getByRole("tab", { name: "Docker" }).click();
+  await page.getByRole("tab", { name: "Windows" }).click();
 
-    /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+  /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
 
-    const [rubyInstallationDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "Install the Ruby agent" }).click(),
-    ]);
+  await page.getByRole("tab", { name: "Docker" }).click();
 
-    await page.waitForLoadState("networkidle");
+  /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
 
-    await rubyInstallationDoc
-      .getByRole("heading", {
-        name: "Install the New Relic Ruby agent",
-      })
-      .click();
+  const [rubyInstallationDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.install-ruby-link").click(),
+  ]);
 
-    await rubyInstallationDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    const [appNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs on naming" }).click(),
-    ]);
+  await rubyInstallationDoc
+    .getByRole("heading", {
+      name: "Install the New Relic Ruby agent",
+    })
+    .click();
 
-    // await appNamingDoc.waitForTimeout(5000);
+  await rubyInstallationDoc.close();
 
-    // expect(await page.screenshot()).toMatchSnapshot("app-naming.png");
+  const [appNamingDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.app-naming-link").click(),
+  ]);
 
-    await appNamingDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    const [distributedTracingLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page
-        .getByRole("link", { name: "Introduction to distributed tracing" })
-        .click(),
-    ]);
+  await appNamingDoc
+    .getByRole("heading", {
+      name: "Name or change the name of your application",
+    })
+    .click();
 
-    await distributedTracingLink
-      .getByRole("heading", {
-        name: "Introduction to distributed tracing",
-      })
-      .click();
+  await appNamingDoc.close();
 
-    await distributedTracingLink.close();
+  const [distributedTracingLink] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.distributed-tracing-link").click(),
+  ]);
 
-    const [supportedFrameworkDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page
-        .getByRole("link", { name: "Requirements and supported frameworks" })
-        .click(),
-    ]);
+  await distributedTracingLink
+    .getByRole("heading", {
+      name: "Introduction to distributed tracing",
+    })
+    .click();
 
-    await supportedFrameworkDoc
-      .getByRole("heading", {
-        name: "Ruby agent requirements and supported frameworks",
-      })
-      .click();
+  await distributedTracingLink.close();
 
-    await supportedFrameworkDoc.close();
+  const [supportedFrameworkDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.requirement-link").click(),
+  ]);
 
-    // await page.getByTestId("platform.user-feedback-button").click();
+  await supportedFrameworkDoc
+    .getByRole("heading", {
+      name: "Ruby agent requirements and supported frameworks",
+    })
+    .click();
 
-    // await page
-    //   .getByRole("heading", { name: "Do you have specific feedback for us?" })
-    //   .isVisible();
+  await supportedFrameworkDoc.close();
 
-    // await page.getByRole("button", { name: "Close modal" }).click();
+  await page.getByTestId("platform.user-feedback-button").click();
 
-    // await page.getByTestId("platform.stacked-view-close-button").click();
+  await page
+    .getByRole("heading", { name: "Do you have specific feedback for us?" })
+    .click();
 
-    // await page.getByTestId("install-newrelic.button-back-to-home").click();
-  });
+  await page.getByRole("button", { name: "Close modal" }).click();
+
+  await page.getByTestId("platform.stacked-view-close-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
+});
