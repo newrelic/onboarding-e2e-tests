@@ -3,7 +3,7 @@ const { defineConfig, devices } = require("@playwright/test");
 require("dotenv").config();
 
 module.exports = defineConfig({
-  testDir: "./e2e/tests",
+  testDir: "e2e/tests",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -20,7 +20,7 @@ module.exports = defineConfig({
   /* Retry on CI only */
   retries: 2,
   /* Opt out of parallel tests on CI. */
-  workers: 2,
+  workers: 4,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -28,7 +28,8 @@ module.exports = defineConfig({
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
     actionTimeout: 0,
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "https://dev-one.newrelic.com/?nerdpacks=local",
+    // baseURL: "https://dev-one.newrelic.com/?nerdpacks=local",
+    baseURL: "https://staging-one.newrelic.com/",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -83,9 +84,4 @@ module.exports = defineConfig({
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   port: 3000,
-  // },
 });
