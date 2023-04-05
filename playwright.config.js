@@ -3,7 +3,7 @@ const { defineConfig, devices } = require("@playwright/test");
 require("dotenv").config();
 
 module.exports = defineConfig({
-  testDir: "./e2e/tests",
+  testDir: "e2e/tests",
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
   expect: {
@@ -84,9 +84,4 @@ module.exports = defineConfig({
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   port: 3000,
-  // },
 });

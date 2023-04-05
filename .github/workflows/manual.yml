@@ -8,6 +8,10 @@ on:
     branches: [main, master]
   schedule: # Schedule the job to run every 1 hour.
     - cron: "*/60 * * * *"
+ paths:
+      - 'e2e/tests/'
+repository_dispatch:
+    types: [run-tests]
     
 permissions:
   contents: write
@@ -19,7 +23,9 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout Onboarding e2e tests repo
+        uses: actions/checkout@v3
+      # - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
