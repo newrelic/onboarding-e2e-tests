@@ -38,6 +38,7 @@ Currently scheduled to run once every 60 minuites. Schedule can be edited in git
 1. Clone the repo
 2. Install the correct Node version: `nvm install`
 3. Install dependencies: `npm i`
+4. To test local nerdpakcs, in playwright.config.js update baseURL to "https://dev-one.newrelic.com/?nerdpacks=local"
 
 ## Running the tests
 
@@ -94,7 +95,3 @@ If you want run a specific test file, you can add path to the file at the end of
 ```sh
 npx playwright test --headed ./tests/mytest.spec.js
 ```
-
-
-
-

@@ -1,5 +1,4 @@
-# This is a basic workflow that is manually triggered
-name: Manual
+name: Guided Installation e2e tests
 
 on:
   push:
@@ -8,10 +7,14 @@ on:
     branches: [main, master]
   schedule: # Schedule the job to run every 1 hour.
     - cron: "*/60 * * * *"
+<<<<<<< HEAD
  paths:
       - 'e2e/tests/'
 # repository_dispatch:
 #     types: [run-tests]
+=======
+
+>>>>>>> 25c986f6456aa4e0d3fdf289b15d60bddd44e1bc
     
 permissions:
   contents: write
@@ -19,37 +22,43 @@ permissions:
   id-token: write
   
 jobs:
-  test:
+  e2e-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Onboarding e2e tests repo
-        uses: actions/checkout@v3
-      # - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      
       - uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          
       - name: Install dependencies
         run: npm ci
+        
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
+        
       - name: Run Playwright tests
         run: |
           export ENV_SECRET_EMAIL=${{secrets.EMAIL}}
           export ENV_SECRET_PASSWORD=${{secrets.PASSWORD}}
           npx playwright test --reporter=html
+          
       - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+          
       - name: Setup Pages
         uses: actions/configure-pages@v2
+        
       - name: upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: playwright-report/
+          
       - name: Deploy to gitGithub Pages
         id: deployment
         uses: actions/deploy-pages@v1
