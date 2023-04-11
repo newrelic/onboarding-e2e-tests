@@ -10,8 +10,8 @@ on:
     - cron: "*/60 * * * *"
  paths:
       - 'e2e/tests/'
-repository_dispatch:
-    types: [run-tests]
+# repository_dispatch:
+#     types: [run-tests]
     
 permissions:
   contents: write
