@@ -27,7 +27,7 @@ test.describe("Java Guided installation", () => {
   test("should show different methods to install the Java agent", async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByText("APM (Application Monitorinsssg)").click();
 
     await page.getByTestId("install-newrelic.tile-java").click();
 
