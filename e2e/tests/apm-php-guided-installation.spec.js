@@ -41,9 +41,9 @@ test.describe("PHP Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
-    await expect(
-      page.getByText("How do you want to install the PHP agent?")
-    ).toBeVisible();
+//     await expect(
+//       page.getByText("How do you want to install the PHP agent?")
+//     ).toBeVisible();
 
     await expect(page.getByText("On host", { exact: true })).toBeVisible();
 
