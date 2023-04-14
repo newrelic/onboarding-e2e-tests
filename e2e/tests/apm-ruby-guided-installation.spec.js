@@ -12,7 +12,7 @@ test.beforeEach(async () => {
   });
   page = await context.newPage();
   await page.waitForLoadState("networkidle");
-  await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
+  await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&nerdpacks=local&");
 });
 
 test.afterEach(async () => {
