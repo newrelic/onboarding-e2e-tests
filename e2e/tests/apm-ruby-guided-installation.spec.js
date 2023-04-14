@@ -26,182 +26,197 @@ test.afterAll(async () => {
 test("should shows steps to install the Ruby", async () => {
   test.slow();
 
-  await page.getByText("APM (Application Monitoring)").click();
+  await page.getByTestId('install-newrelic.apm-tab').click();
 
-  await page.getByTestId("install-newrelic.tile-ruby").click();
+  await page.getByTestId('install-newrelic.tile-ruby').click();
 
-  await expect(page.getByText("Select your language (Ruby)")).toBeVisible();
+  const selectEnvironmentHeading = await page.locator(
+    `div[data-test-id="install-newrelic.steps-item"]`,
+  );
 
-  await expect(page.getByText("Install the Ruby agent")).toBeVisible();
+  await expect(selectEnvironmentHeading).toContainText(
+    'Select your language (Ruby)',
+  );
 
-  await page.getByTestId("install-newrelic.button-begin-installation").click();
-
-  await page.waitForLoadState("networkidle");
-
-  await expect(page.getByText("Add your Ruby application data")).toBeVisible();
-
-  await expect(
-    page.getByText(
-      "Install the APM Ruby agent to monitor your Ruby application. Follow these steps to get your data into New Relic."
-    )
-  ).toBeVisible();
-
-  const [seeAppNamingDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    page.getByRole("link", { name: "See our docs on naming" }).click(),
-  ]);
-
-  await page.waitForLoadState("networkidle");
+  const installRuby = await page.getByTestId('install-newrelic.title');
+  await expect(installRuby).toContainText('Install the Ruby agent');
 
   await page
-    .getByText("Name or change the name of your application")
+    .getByTestId('install-newrelic.button-begin-installation')
+    .click();
+
+  await page.waitForLoadState('networkidle');
+
+  const addRuby = page.getByTestId('setup.heading');
+
+  await expect(addRuby).toContainText('Add your Ruby application data');
+
+  const [seeAppNamingDoc] = await Promise.all([
+    page.waitForEvent('popup'),
+    page.getByRole('link', { name: 'See our docs on naming' }).click(),
+  ]);
+
+  await page.waitForLoadState('networkidle');
+
+  await page
+    .getByText('Name or change the name of your application')
     .isVisible();
 
   await seeAppNamingDoc.close();
 
-  await expect(
-    page.getByText("Download your custom configuration file")
-  ).toBeVisible();
+  const downloadFile = page.getByTestId('setup.download-file');
+  await expect(downloadFile).toContainText(
+    'Download your custom configuration file',
+  );
 
-  await page.getByTestId("setup.download-button").isDisabled();
+  await page.getByTestId('setup.download-button').isDisabled();
 
-  await expect(
-    page.getByText("You must complete steps  1, and 2")
-  ).toBeVisible();
+  const warningText = page.getByTestId('setup.warning-text');
+  await expect(warningText).toContainText(
+    'You must complete steps  1, and 2',
+  );
 
   const applicationNameContainer = await page.locator(
-    'div[data-test-id="setup.naming-textfield"]'
+    'div[data-test-id="setup.naming-textfield"]',
   );
 
   const applicationNameInput = await applicationNameContainer.locator(
-    'input[type="text"]'
+    'input[type="text"]',
   );
 
-  await applicationNameInput.fill("testApp");
+  await applicationNameInput.fill('testApp');
 
-  await expect(
-    page.getByText("You must complete steps  1, and 2")
-  ).toBeHidden();
+  const bundlerHeading = page.getByTestId('setup.bundler-heading');
+  await expect(bundlerHeading).toContainText('Are you using Bundler?');
 
-  await page.getByTestId("setup.download-button").isDisabled();
+  const bundlerOptions = await page.locator(
+    'div[data-test-id="setup.bundler"]',
+  );
 
-  await expect(page.getByText("You must complete step 2")).toBeVisible();
+  const bundlerRadio = await bundlerOptions.locator('input[type="radio"]');
 
-  await page
-    .getByRole("heading", { name: "Are you using Bundler?" })
-    .isVisible();
+  await bundlerRadio.check();
 
-  await page.getByLabel("Yes, I’m using Bundler").check();
+  await page.getByTestId('setup.download-button').isEnabled();
 
-  await page.getByRole("button", { name: "Download" }).isEnabled();
+  await expect(page.getByText('You must complete step 2')).toBeHidden();
 
-  await expect(page.getByText("You must complete step 2")).toBeHidden();
+  const gemFile = page.getByTestId('setup.gemfile');
+  await expect(gemFile).toContainText('Add the agent gem to your Gemfile:');
 
-  await expect(
-    page.getByText("Add the agent gem to your Gemfile:")
-  ).toBeVisible();
+  const addAgentCommand = page.getByTestId('setup.add-agent-command');
+  await expect(addAgentCommand).toContainText(`gem 'newrelic_rpm'`);
 
-  await expect(page.getByText("gem 'newrelic_rpm'")).toBeVisible();
+  const bundleGemFile = page.getByTestId('setup.bundle-gemfile');
+  await expect(bundleGemFile).toContainText(
+    'Make sure it gets added to your Bundle Gemfile:',
+  );
 
-  await expect(
-    page.getByText("Make sure it gets added to your Bundle Gemfile:")
-  ).toBeVisible();
+  const bundleInstall = page.getByTestId('setup.bundle-install-command');
+  await expect(bundleInstall).toContainText(`bundle install`);
 
-  await expect(page.getByText("bundle install")).toBeVisible();
+  const noBundler = await page.locator(
+    'div[data-test-id="setup.no-bundler"]',
+  );
 
-  await page.getByLabel("No, I'm not using Bundler").check();
+  const noBundlerRadio = await noBundler.locator('input[type="radio"]');
 
-  await expect(page.getByText("Install the agent using gem")).toBeVisible();
+  await noBundlerRadio.check();
 
-  await expect(page.getByText("gem install newrelic_rpm")).toBeVisible();
+  const installGem = page.getByTestId('setup.install-gem');
+  await expect(installGem).toContainText('Install the agent using gem:');
 
-  await expect(
-    page.getByText("Under your application’s require directive, add:")
-  ).toBeVisible();
+  const gemCode = page.getByTestId('setup.install-using-gem-command');
+  await expect(gemCode).toContainText(`gem install newrelic_rpm`);
 
-  await expect(page.getByText("require 'newrelic_rpm'")).toBeVisible();
+  const redirectiveCommand = page.getByTestId(
+    'setup.require-directive-command',
+  );
+  await expect(redirectiveCommand).toContainText(`require 'newrelic_rpm'`);
 
-  await expect(
-    page.getByText(
-      "Copy this command into your host to enable infrastructure and logs metrics."
-    )
-  ).toBeVisible();
+  await expect(page.getByTestId('setup.agent-commands')).toContainText(
+    `NEW_RELIC_API_KEY=NRAK-`,
+  );
 
-  /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+  const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-  await page.getByRole("tab", { name: "Windows" }).click();
+  await tabItems.nth(1).click();
 
-  /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+  await expect(page.getByTestId('setup.agent-commands')).toContainText(
+    `$env:NEW_RELIC_API_KEY=`,
+  );
 
-  await page.getByRole("tab", { name: "Docker" }).click();
+  await tabItems.nth(2).click();
 
-  /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+  await expect(page.getByTestId('setup.agent-commands')).toContainText(
+    `NRIA_LICENSE_KEY=`,
+  );
 
   const [rubyInstallationDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.install-ruby-link").click(),
+    page.waitForEvent('popup'),
+    await page.getByTestId('setup.install-ruby-link').click(),
   ]);
 
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState('networkidle');
 
   await rubyInstallationDoc
-    .getByRole("heading", {
-      name: "Install the New Relic Ruby agent",
+    .getByRole('heading', {
+      name: 'Install the New Relic Ruby agent',
     })
     .click();
 
   await rubyInstallationDoc.close();
 
   const [appNamingDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.app-naming-link").click(),
+    page.waitForEvent('popup'),
+    await page.getByTestId('setup.app-naming-link').click(),
   ]);
 
-  await page.waitForLoadState("networkidle");
+  await page.waitForLoadState('networkidle');
 
   await appNamingDoc
-    .getByRole("heading", {
-      name: "Name or change the name of your application",
+    .getByRole('heading', {
+      name: 'Name or change the name of your application',
     })
     .click();
 
   await appNamingDoc.close();
 
   const [distributedTracingLink] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.distributed-tracing-link").click(),
+    page.waitForEvent('popup'),
+    await page.getByTestId('setup.distributed-tracing-link').click(),
   ]);
 
   await distributedTracingLink
-    .getByRole("heading", {
-      name: "Introduction to distributed tracing",
+    .getByRole('heading', {
+      name: 'Introduction to distributed tracing',
     })
     .click();
 
   await distributedTracingLink.close();
 
   const [supportedFrameworkDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.requirement-link").click(),
+    page.waitForEvent('popup'),
+    await page.getByTestId('setup.requirement-link').click(),
   ]);
 
   await supportedFrameworkDoc
-    .getByRole("heading", {
-      name: "Ruby agent requirements and supported frameworks",
+    .getByRole('heading', {
+      name: 'Ruby agent requirements and supported frameworks',
     })
     .click();
 
   await supportedFrameworkDoc.close();
 
-  await page.getByTestId("platform.user-feedback-button").click();
+  await page.getByTestId('platform.user-feedback-button').click();
 
   await page
-    .getByRole("heading", { name: "Do you have specific feedback for us?" })
+    .getByRole('heading', { name: 'Do you have specific feedback for us?' })
     .click();
 
-  await page.getByRole("button", { name: "Close modal" }).click();
+  await page.getByRole('button', { name: 'Close modal' }).click();
 
-  await page.getByTestId("platform.stacked-view-close-button").click();
+  await page.getByTestId('platform.stacked-view-close-button').click();
 
-  await page.getByTestId("install-newrelic.button-back-to-home").click();
+  await page.getByTestId('install-newrelic.button-back-to-home').click();
 });
