@@ -37,10 +37,24 @@ Currently scheduled to run once every 60 minuites. Schedule can be edited in git
 
 1. Clone the repo
 2. Install the correct Node version: `nvm install`
-3. Install dependencies: `npm i`
-4. To test local nerdpakcs, in playwright.config.js update baseURL to "https://dev-one.newrelic.com/?nerdpacks=local" and update the navigation in            beforeEach hook to "/nr1-core/install-newrelic/installation-plan?e2e-test&nerdpacks=local&" in the scripts you are testing.
-   For example, if you are testing Go script make the changes as mentioned below:
-   <img width="833" alt="Screenshot 2023-04-14 at 2 56 17 PM" src="https://user-images.githubusercontent.com/127721871/232005086-e2557101-bd2d-4b9d-8ff8-44ec6c5af1db.png">
+3. Install dependencies: `npm install`
+4. To test local nerdpack, in **playwright.config.js** file update the baseURL to `https://dev-one.newrelic.com/?nerdpacks=local` and 
+    update the navigation in beforeEach hook from `/nr1-core/install-newrelic/installation-plan?e2e-test&` 
+    to `/nr1-core/install-newrelic/installation-plan?e2e-test&nerdpacks=local&` in the scripts you are testing.
+
+    For example, if you are testing Go agent installation script make the changes as mentioned above in the beforeEach hook method:
+
+    ```sh
+        test.beforeEach(async () => {
+        browser = await chromium.launch();
+        context = await browser.newContext({
+            storageState: "e2e/sessions/storageState.json",
+        });
+        page = await context.newPage();
+        await page.waitForLoadState("networkidle");
+        await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
+        });
+    ```
 
 ## Running the tests
 
