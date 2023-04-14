@@ -24,398 +24,447 @@ test.afterAll(async () => {
 });
 
 test.describe(".NET Guided installation", () => {
-  test("should shows different methods available to install the .NET", async () => {
+  test('should shows different methods available to install the .NET', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-dotnet").click();
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
-    await expect(page.getByText("Select your language (.NET)")).toBeVisible();
+    const selectEnvironmentHeading = await page.locator(
+      `div[data-test-id="install-newrelic.steps-item"]`,
+    );
 
-    await expect(page.getByText("Install the .NET agent")).toBeVisible();
+    await expect(selectEnvironmentHeading).toContainText(
+      'Select your language (.NET)',
+    );
+
+    const installDotNet = await page.getByTestId('install-newrelic.title');
+
+    await expect(installDotNet).toContainText('Install the .NET agent');
 
     await page
-      .getByTestId("install-newrelic.button-begin-installation")
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
-    await page
-      .getByRole("heading", {
-        name: "How do you want to install the .NET agent?",
-      })
-      .isVisible();
+    const installationTitle = page.getByTestId(
+      'install-newrelic.installation-title',
+    );
+    await expect(installationTitle).toContainText(
+      'How do you want to install the .NET agent?',
+    );
 
-    await page.getByRole("heading", { name: "On a Linux host" }).isVisible();
+    const dockerLinux = page.getByTestId('install-newrelic.docker-linux-host');
 
-    await page
-      .getByRole("heading", { name: "On a Windows host with IIS" })
-      .isVisible();
+    await expect(dockerLinux).toContainText('On a Linux host');
 
-    await page
-      .getByRole("heading", { name: "On a Windows host without IIS" })
-      .isVisible();
+    const dockerIIS = page.getByTestId('install-newrelic.docker-with-iis');
 
-    await page.getByRole("heading", { name: "Docker for Linux" }).isVisible();
+    await expect(dockerIIS).toContainText('On a Windows host with IIS');
 
-    await page.getByRole("heading", { name: "Docker for Windows" }).isVisible();
+    const dockerWIthoutIIS = page.getByTestId(
+      'install-newrelic.docker-without-iis',
+    );
 
-    await page.getByRole("heading", { name: "AWS Lambda" }).isVisible();
+    await expect(dockerWIthoutIIS).toContainText(
+      'On a Windows host without IIS',
+    );
+
+    const dotNetDocker = page.getByTestId('install-newrelic.docker-linux-link');
+
+    await expect(dotNetDocker).toContainText('Docker for Linux');
+
+    const dotNetWindows = page.getByTestId(
+      'install-newrelic.docker-windows-link',
+    );
+
+    await expect(dotNetWindows).toContainText('Docker for Windows');
+
+    const dotNetAzure = page.getByTestId('install-newrelic.dotnet-azure-link');
+
+    await expect(dotNetAzure).toContainText('Azure Web Apps');
 
     const [footerSeeOurDocs] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.docs-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.docs-link').click(),
     ]);
 
+    await page.waitForLoadState('networkidle');
+
     await page
-      .getByRole("heading", { name: "Guided install overview" })
+      .getByRole('heading', { name: 'Guided install overview' })
       .isVisible();
 
     await footerSeeOurDocs.close();
 
-    await page.getByTestId("install-newrelic.feedback-link").click();
+    await page.getByTestId('install-newrelic.feedback-link').click();
 
-    await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
+    const feedbackTitle = await page.getByTestId(
+      'install-newrelic.modal-title',
+    );
 
-    await page.getByRole("button", { name: "Close modal" }).click();
+    await expect(feedbackTitle).toContainText('Help us improve New Relic One');
 
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+    await page.getByRole('button', { name: 'Close modal' }).click();
+
+    await page.getByTestId('install-newrelic.apm-footer-back-button').click();
   });
 
-  test("should guide steps to install the .NET agent on a Linux host", async () => {
+  test('should guide steps to install the .NET agent on a Linux host', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-dotnet").click();
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
     await page
-      .getByTestId("install-newrelic.button-begin-installation")
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    await page.waitForLoadState("networkidle");
+    const dockerLinux = page.getByTestId('install-newrelic.docker-linux-host');
 
-    await page.getByRole("heading", { name: "On a Linux host" }).click();
+    await dockerLinux.click();
 
     const instllationCommand = `curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh`;
 
     await expect(
-      page.getByTestId("install-newrelic.code-snippet")
+      page.getByTestId('install-newrelic.code-snippet'),
     ).toContainText(instllationCommand);
 
     const [footerSeeOurDocs] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.docs-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.docs-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Guided install overview" })
+      .getByRole('heading', { name: 'Guided install overview' })
       .isVisible();
 
     await footerSeeOurDocs.close();
 
-    await page.getByTestId("install-newrelic.feedback-link").click();
+    await page.getByTestId('install-newrelic.feedback-link').click();
 
-    await expect(
-      page.getByText("How is New Relic One working for you, right now?")
-    ).toBeVisible();
+    const feedbackTitle = page.getByTestId('install-newrelic.feedback-title');
 
-    await page.getByRole("button", { name: "Close modal" }).click();
+    await expect(feedbackTitle).toContainText(
+      'How is New Relic One working for you, right now?',
+    );
+
+    await page.getByRole('button', { name: 'Close modal' }).click();
 
     await page
-      .getByTestId("install-newrelic.footer-action-dotnet-agent-installer")
+      .getByTestId('install-newrelic.footer-action-dotnet-agent-installer')
       .click();
 
-    await page
-      .getByRole("heading", { name: "Add your .NET application data" })
-      .isVisible();
+    const addDotNet = page.getByTestId('setup.heading');
 
-    await page
-      .getByRole("heading", { name: "Give your application a name" })
-      .isVisible();
+    await expect(addDotNet).toContainText('Add your .NET application data');
 
     const [seeAppNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs on naming" }).click(),
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: 'See our docs on naming' }).click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByText("Name or change the name of your application")
+      .getByText('Name or change the name of your application')
       .isVisible();
 
     await seeAppNamingDoc.close();
 
-    await page.getByTestId("setup.see-your-data-button").isDisabled();
+    await page.getByTestId('setup.see-your-data-button').isDisabled();
 
     const applicationNameContainer = await page.locator(
-      'div[data-test-id="setup.naming-textfield"]'
+      'div[data-test-id="setup.naming-textfield"]',
     );
 
     const applicationNameInput = await applicationNameContainer.locator(
-      'input[type="text"]'
+      'input[type="text"]',
     );
 
-    await applicationNameInput.fill("testApp");
+    await applicationNameInput.fill('testApp');
 
-    await page.getByLabel("apt").check();
+    const aptTitle = await page.locator('div[data-test-id="setup.apt"]');
 
-    await page
-      .getByText("sudo apt-get install newrelic-dotnet-agent")
-      .isVisible();
+    const aptRadio = await aptTitle.locator('input[type="radio"]');
 
-    await page.getByTestId("setup.see-your-data-button").isEnabled();
+    await aptRadio.check();
+
+    const installCommand = page.getByTestId('setup.install-agent-command');
+
+    await expect(installCommand).toContainText(
+      `sudo apt-get install newrelic-dotnet-agent`,
+    );
+
+    await page.getByTestId('setup.see-your-data-button').isEnabled();
 
     await expect(
       page.getByText(
-        "Copy this command into your host to enable infrastructure and logs metrics."
-      )
+        'Copy this command into your host to enable infrastructure and logs metrics.',
+      ),
     ).toBeVisible();
 
-    /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NEW_RELIC_API_KEY=NRAK-`,
+    );
 
-    await page.getByRole("tab", { name: "Windows" }).click();
+    const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-    /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+    await tabItems.nth(1).click();
 
-    await page.getByRole("tab", { name: "Docker" }).click();
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `$env:NEW_RELIC_API_KEY=`,
+    );
 
-    /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+    await tabItems.nth(2).click();
+
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NRIA_LICENSE_KEY=`,
+    );
 
     const [agentInstallationDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.install-dotnet-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.install-dotnet-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Monitor your .NET app" })
+      .getByRole('heading', { name: 'Monitor your .NET app' })
       .isVisible();
 
     await agentInstallationDoc.close();
 
     const [agentNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.app-naming-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.app-naming-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", {
-        name: "Name or change the name of your application",
+      .getByRole('heading', {
+        name: 'Name or change the name of your application',
       })
       .isVisible();
 
     await agentNamingDoc.close();
 
     const [distributedTracingLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.distributed-tracing-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.distributed-tracing-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Introduction to distributed tracing" })
+      .getByRole('heading', { name: 'Introduction to distributed tracing' })
       .isVisible();
 
     await distributedTracingLink.close();
 
-    /* open instrumentation doc is unavailable */
-    // const [openInstrumentationDoc] = await Promise.all([
-    //   page.waitForEvent('popup'),
-    //   page.getByRole('link', { name: 'Open instrumentation' }).click(),
-    // ]);
+    await page.getByTestId('platform.user-feedback-button').nth(1).click();
 
-    await page.getByTestId("platform.user-feedback-button").nth(1).click();
+    await page.getByTestId('install-newrelic.feedback-question').isVisible();
 
-    await page
-      .getByRole("heading", { name: "Do you have specific feedback for us?" })
-      .isVisible();
+    await page.getByRole('button', { name: 'Close modal' }).click();
 
-    await page.getByRole("button", { name: "Close modal" }).click();
-
-    await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
+    await page.getByTestId('platform.stacked-view-close-button').nth(1).click();
 
     await page
-      .getByTestId("install-newrelic.footer-action-back-button")
+      .getByTestId('install-newrelic.footer-action-back-button')
       .click();
 
-    await page.getByTestId("install-newrelic.button-back-to-home").click();
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 
-  test("should guide steps to install the .NET agent On a Windows host with IIS", async () => {
+  test('should guide steps to install the .NET agent On a Windows host with IIS', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-dotnet").click();
-
-    await page
-      .getByTestId("install-newrelic.button-begin-installation")
-      .click();
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
     await page
-      .getByRole("heading", { name: "On a Windows host with IIS" })
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    await expect(
-      page.getByText(
-        "Copy and run this command in PowerShell and Run as administrator"
-      )
-    ).toBeVisible();
+    const dockerIIS = page.getByTestId('install-newrelic.docker-with-iis');
 
-    await expect(
-      page.getByText(
-        "To allow data through your firewall, set the HTTPS_PROXY environment variable to your proxy’s URL before you run the command below."
-      )
-    ).toBeVisible();
+    await dockerIIS.click();
+
+    const headingText = page.getByTestId('install-newrelic.heading-text');
+
+    await expect(headingText).toContainText(
+      'Copy and run this command in PowerShell and run as administrator',
+    );
+
+    const fireWallMessage = await page.locator(
+      `div[data-test-id="install-newrelic.proxy-doc"]`,
+    );
+
+    await expect(fireWallMessage).toContainText(
+      'Using a firewall? Configure your proxy first.',
+    );
 
     const paragraphElement = await page.locator(
-      `div[data-test-id="install-newrelic.proxy-doc"]`
+      `div[data-test-id="install-newrelic.proxy-doc"]`,
     );
-    const linkElement = await paragraphElement.locator("a");
+    const linkElement = await paragraphElement.locator('a');
 
     const [httpsProxyDoc] = await Promise.all([
-      page.waitForEvent("popup"),
+      page.waitForEvent('popup'),
       await linkElement.click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByText("The proxy element supports the following attributes:")
+      .getByText('The proxy element supports the following attributes:')
       .isVisible();
 
     await httpsProxyDoc.close();
 
     await expect(
-      page.getByTestId("install-newrelic.code-snippet")
+      page.getByTestId('install-newrelic.code-snippet'),
     ).toContainText(`$env:NEW_RELIC_API_KEY`);
 
-    const [footerDocsLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.docs-link").click(),
+    const [footerSeeOurDocs] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.docs-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
-
-    await page.getByText("Guided install overview").isVisible();
-
-    await footerDocsLink.close();
-
-    await page.getByTestId("install-newrelic.feedback-link").click();
-
-    await expect(
-      page.getByText("How is New Relic One working for you, right now?")
-    ).toBeVisible();
-
-    await page.getByRole("button", { name: "Close modal" }).click();
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByTestId("install-newrelic.footer-action-dotnet-agent-installer")
+      .getByRole('heading', { name: 'Guided install overview' })
+      .isVisible();
+
+    await footerSeeOurDocs.close();
+
+    await page.getByTestId('install-newrelic.feedback-link').click();
+
+    const feedbackTitle = await page.getByTestId(
+      'install-newrelic.modal-title',
+    );
+
+    await expect(feedbackTitle).toContainText('Help us improve New Relic One');
+
+    await page.getByRole('button', { name: 'Close modal' }).click();
+
+    await page
+      .getByTestId('install-newrelic.footer-action-dotnet-agent-installer')
       .click();
 
-    await page
-      .getByRole("heading", { name: "Add your .NET application data" })
-      .isVisible();
+    const addDotNet = page.getByTestId('setup.heading');
 
-    await page
-      .getByRole("heading", { name: "Give your application a name" })
-      .isVisible();
+    await expect(addDotNet).toContainText('Add your .NET application data');
 
     const [seeAppNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs on naming" }).click(),
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: 'See our docs on naming' }).click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByText("Name or change the name of your application")
+      .getByText('Name or change the name of your application')
       .isVisible();
 
     await seeAppNamingDoc.close();
 
-    await page.getByRole("button", { name: "See your data" }).isDisabled();
+    await page.getByTestId('setup.see-your-data-button').isDisabled();
 
     const applicationNameContainer = await page.locator(
-      'div[data-test-id="setup.naming-textfield"]'
+      'div[data-test-id="setup.naming-textfield"]',
     );
 
     const applicationNameInput = await applicationNameContainer.locator(
-      'input[type="text"]'
+      'input[type="text"]',
     );
 
-    await applicationNameInput.fill("testApp");
+    await applicationNameInput.fill('testApp');
 
-    await page.getByLabel("apt").check();
+    const aptTitle = await page.locator('div[data-test-id="setup.apt"]');
 
-    await page
-      .getByText("sudo apt-get install newrelic-dotnet-agent")
-      .isVisible();
+    const aptRadio = await aptTitle.locator('input[type="radio"]');
 
-    await page.getByTestId("setup.see-your-data-button").isEnabled();
+    await aptRadio.check();
+
+    const installCommand = page.getByTestId('setup.install-agent-command');
+
+    await expect(installCommand).toContainText(
+      `sudo apt-get install newrelic-dotnet-agent`,
+    );
+
+    await page.getByTestId('setup.see-your-data-button').isEnabled();
 
     await expect(
       page.getByText(
-        "Copy this command into your host to enable infrastructure and logs metrics."
-      )
+        'Copy this command into your host to enable infrastructure and logs metrics.',
+      ),
     ).toBeVisible();
 
-    /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NEW_RELIC_API_KEY=NRAK-`,
+    );
 
-    await page.getByRole("tab", { name: "Windows" }).click();
+    const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-    /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+    await tabItems.nth(1).click();
 
-    await page.getByRole("tab", { name: "Docker" }).click();
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `$env:NEW_RELIC_API_KEY=`,
+    );
 
-    /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+    await tabItems.nth(2).click();
+
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NRIA_LICENSE_KEY=`,
+    );
 
     const [agentInstallationDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.install-dotnet-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.install-dotnet-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Monitor your .NET app" })
+      .getByRole('heading', { name: 'Monitor your .NET app' })
       .isVisible();
 
     await agentInstallationDoc.close();
 
     const [agentNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.app-naming-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.app-naming-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", {
-        name: "Name or change the name of your application",
+      .getByRole('heading', {
+        name: 'Name or change the name of your application',
       })
       .isVisible();
 
     await agentNamingDoc.close();
 
     const [distributedTracingLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.distributed-tracing-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.distributed-tracing-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Introduction to distributed tracing" })
+      .getByRole('heading', { name: 'Introduction to distributed tracing' })
       .isVisible();
 
     await distributedTracingLink.close();
@@ -426,121 +475,138 @@ test.describe(".NET Guided installation", () => {
     //   page.getByRole('link', { name: 'Open instrumentation' }).click(),
     // ]);
 
-    await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
+    // await page.waitForLoadState('networkidle');
+
+    await page.getByTestId('platform.stacked-view-close-button').nth(1).click();
 
     await page
-      .getByTestId("install-newrelic.footer-action-back-button")
+      .getByTestId('install-newrelic.footer-action-back-button')
       .click();
 
-    await page.getByTestId("install-newrelic.button-back-to-home").click();
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 
-  test("should guide steps to install the .NET agent On a Windows host without IIS", async () => {
+  test('should guide steps to install the .NET agent On a Windows host without IIS', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-dotnet").click();
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
     await page
-      .getByTestId("install-newrelic.button-begin-installation")
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    await page
-      .getByRole("heading", { name: "On a Windows host without IIS" })
-      .click();
+    const dockerWIthoutIIS = page.getByTestId(
+      'install-newrelic.docker-without-iis',
+    );
 
-    await page
-      .getByRole("heading", { name: "Add your .NET application data" })
-      .isVisible();
+    await dockerWIthoutIIS.click();
 
-    /* need to define test-id */
+    const addDotNet = page.getByTestId('setup.heading');
+
+    await expect(addDotNet).toContainText('Add your .NET application data');
+
     const [seeAppNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs on naming" }).click(),
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: 'See our docs on naming' }).click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByText("Name or change the name of your application")
+      .getByText('Name or change the name of your application')
       .isVisible();
 
     await seeAppNamingDoc.close();
 
-    await page.getByTestId("setup.see-your-data-button").isDisabled();
+    await page.getByTestId('setup.see-your-data-button').isDisabled();
 
     const applicationNameContainer = await page.locator(
-      'div[data-test-id="setup.naming-textfield"]'
+      'div[data-test-id="setup.naming-textfield"]',
     );
 
     const applicationNameInput = await applicationNameContainer.locator(
-      'input[type="text"]'
+      'input[type="text"]',
     );
 
-    await applicationNameInput.fill("testApp");
+    await applicationNameInput.fill('testApp');
 
-    await page.getByLabel("apt").check();
+    const aptTitle = await page.locator('div[data-test-id="setup.apt"]');
 
-    await page
-      .getByText("sudo apt-get install newrelic-dotnet-agent")
-      .isVisible();
+    const aptRadio = await aptTitle.locator('input[type="radio"]');
 
-    await page.getByTestId("setup.see-your-data-button").isEnabled();
+    await aptRadio.check();
+
+    const installCommand = page.getByTestId('setup.install-agent-command');
+
+    await expect(installCommand).toContainText(
+      `sudo apt-get install newrelic-dotnet-agent`,
+    );
+
+    await page.getByTestId('setup.see-your-data-button').isEnabled();
 
     await expect(
       page.getByText(
-        "Copy this command into your host to enable infrastructure and logs metrics."
-      )
+        'Copy this command into your host to enable infrastructure and logs metrics.',
+      ),
     ).toBeVisible();
 
-    /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NEW_RELIC_API_KEY=NRAK-`,
+    );
 
-    await page.getByRole("tab", { name: "Windows" }).click();
+    const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-    /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+    await tabItems.nth(1).click();
 
-    await page.getByRole("tab", { name: "Docker" }).click();
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `$env:NEW_RELIC_API_KEY=`,
+    );
 
-    /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+    await tabItems.nth(2).click();
+
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NRIA_LICENSE_KEY=`,
+    );
 
     const [agentInstallationDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.install-dotnet-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.install-dotnet-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Monitor your .NET app" })
+      .getByRole('heading', { name: 'Monitor your .NET app' })
       .isVisible();
 
     await agentInstallationDoc.close();
 
     const [agentNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.app-naming-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.app-naming-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", {
-        name: "Name or change the name of your application",
+      .getByRole('heading', {
+        name: 'Name or change the name of your application',
       })
       .isVisible();
 
     await agentNamingDoc.close();
 
     const [distributedTracingLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.distributed-tracing-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.distributed-tracing-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Introduction to distributed tracing" })
+      .getByRole('heading', { name: 'Introduction to distributed tracing' })
       .isVisible();
 
     await distributedTracingLink.close();
@@ -550,19 +616,20 @@ test.describe(".NET Guided installation", () => {
     //   page.waitForEvent('popup'),
     //   page.getByRole('link', { name: 'Open instrumentation' }).click(),
     // ]);
+    // await page.waitForLoadState('networkidle');
 
-    await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
+    await page.getByTestId('platform.stacked-view-close-button').nth(1).click();
 
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+    await page.getByTestId('install-newrelic.apm-footer-back-button').click();
 
-    await page.getByTestId("install-newrelic.button-back-to-home").click();
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 
-  test("should guide steps to install the .NET agent on Docker for Linux ", async () => {
+  test('should guide steps to install the .NET agent on Docker for Linux', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
-   
+    await page.getByTestId('install-newrelic.apm-tab').click();
+
     await page.getByTestId('install-newrelic.tile-dotnet').click();
 
     await page
@@ -570,29 +637,29 @@ test.describe(".NET Guided installation", () => {
       .click();
 
     const [dotnetDockerLinux] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.docker-linux-link").click(),
+      page.waitForEvent('popup'),
+      await page.getByTestId('install-newrelic.docker-linux-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-    .getByRole('heading', {
-      name: 'Monitor your .NET app',
-    })
-    .isVisible();
+      .getByRole('heading', {
+        name: 'Monitor your .NET app',
+      })
+      .isVisible();
 
     await dotnetDockerLinux.close();
 
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+    await page.getByTestId('install-newrelic.apm-footer-back-button').click();
 
-    await page.getByTestId("install-newrelic.button-back-to-home").click();
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 
-  test('should guide steps to install the .NET agent on Docker for Linux', async () => {
+  test('should guide steps to install the .NET agent on Docker for Windows', async () => {
     test.slow();
 
-    await page.getByText('APM (Application Monitoring)').click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
     await page.getByTestId('install-newrelic.tile-dotnet').click();
 
@@ -620,31 +687,33 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId('install-newrelic.button-back-to-home').click();
   });
 
-  test("should guide steps to install the .NET agent on Azure Web Apps", async () => {
+  test('should guide steps to install the .NET agent on Azure Web Apps', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByRole("radio", { name: ".NET" }).click();
+    await page.getByTestId('install-newrelic.tile-dotnet').click();
 
-    await page.getByRole("button", { name: "Begin installation" }).click();
+    await page
+      .getByTestId('install-newrelic.button-begin-installation')
+      .click();
 
     const [azureLink] = await Promise.all([
-      page.waitForEvent("popup"),
+      page.waitForEvent('popup'),
       await page.getByTestId('install-newrelic.dotnet-azure-link').click(),
     ]);
 
-    await azureLink.waitForLoadState("networkidle");
+    await azureLink.waitForLoadState('networkidle');
 
     await azureLink
-      .getByRole("heading", {
-        name: "Install the .NET agent on Azure Web Apps",
+      .getByRole('heading', {
+        name: 'Install the .NET agent on Azure Web Apps',
       })
       .isVisible();
 
     await azureLink.close();
 
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+    await page.getByTestId('install-newrelic.apm-footer-back-button').click();
 
     await page.getByTestId('install-newrelic.button-back-to-home').click();
   });

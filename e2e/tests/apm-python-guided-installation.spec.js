@@ -26,170 +26,184 @@ test.afterAll(async () => {
 test("should shows steps to install the Python", async () => {
   test.slow();
 
-  await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-  await page.getByTestId("install-newrelic.tile-python").click();
+    await page.getByTestId('install-newrelic.tile-python').click();
 
-  await expect(page.getByText("Select your language (Python)")).toBeVisible();
+    const selectEnvironmentHeading = await page.locator(
+      `div[data-test-id="install-newrelic.steps-item"]`,
+    );
 
-  await expect(page.getByText("Install the Python agent")).toBeVisible();
+    await expect(selectEnvironmentHeading).toContainText(
+      'Select your language (Python)',
+    );
 
-  await page.getByTestId("install-newrelic.button-begin-installation").click();
+    const installPython = await page.getByTestId('install-newrelic.title');
+    await expect(installPython).toContainText('Install the Python agent');
 
-  await page.waitForLoadState("networkidle");
+    await page
+      .getByTestId('install-newrelic.button-begin-installation')
+      .click();
 
-  await expect(
-    page.getByText("Add your Python application data")
-  ).toBeVisible();
+    await page.waitForLoadState('networkidle');
 
-  const [seeAppNamingDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    page.getByRole("link", { name: "See our docs on naming" }).click(),
-  ]);
+    const addPython = page.getByTestId('setup.heading');
+    await expect(addPython).toContainText('Add your Python application data');
 
-  await page.waitForLoadState("networkidle");
+    const [seeAppNamingDoc] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: 'See our docs on naming' }).click(),
+    ]);
 
-  await page
-    .getByText("Name or change the name of your application")
-    .isVisible();
+    await page.waitForLoadState('networkidle');
 
-  await seeAppNamingDoc.close();
+    await page
+      .getByText('Name or change the name of your application')
+      .isVisible();
 
-  await expect(
-    page.getByText("Download your custom configuration file")
-  ).toBeVisible();
+    await seeAppNamingDoc.close();
 
-  await page.getByTestId("setup.download-button").isDisabled();
+    const downloadFile = page.getByTestId('setup.download-file');
+    await expect(downloadFile).toContainText(
+      'Download your custom configuration file',
+    );
 
-  await expect(page.getByText("You must complete step 1")).toBeVisible();
+    await page.getByTestId('setup.download-button').isDisabled();
 
-  const applicationNameContainer = await page.locator(
-    'div[data-test-id="setup.naming-textfield"]'
-  );
+    const warningText = page.getByTestId('setup.warning-text');
+    await expect(warningText).toContainText('You must complete step 1');
 
-  const applicationNameInput = await applicationNameContainer.locator(
-    'input[type="text"]'
-  );
+    const applicationNameContainer = page.locator(
+      'div[data-test-id="setup.naming-textfield"]',
+    );
 
-  await applicationNameInput.fill("testApp");
+    const applicationNameInput =
+      applicationNameContainer.locator('input[type="text"]');
 
-  await expect(page.getByText("You must complete steps 1")).toBeHidden();
+    await applicationNameInput.fill('testApp');
 
-  await page.getByTestId("setup.download-button").isEnabled();
+    await expect(page.getByText('You must complete steps 1')).toBeHidden();
 
-  await expect(
-    page.getByText(
-      "For each application you want to monitor, install the agent with pip. If your app runs in a virtualenv, activate it first:"
-    )
-  ).toBeVisible();
+    await page.getByTestId('setup.download-button').isEnabled();
 
-  await expect(page.getByText("pip install newrelic")).toBeVisible();
+    const pipCommand = page.getByTestId('setup.install-pip-command');
+    await expect(pipCommand).toContainText(`pip install newrelic`);
 
-  const startApplication = `Use the following script command before your usual startup options to start your application and start sending your data to New Relic. Replace $YOUR_COMMAND_OPTIONS below with your app’s command line, eg. python app.py.`;
+    const startApplication = `Use the following script command before your usual startup options to start your application and start sending your data to New Relic. Replace $YOUR_COMMAND_OPTIONS below with your app’s command line, eg. python app.py.`;
 
-  await expect(page.getByText(startApplication)).toBeVisible();
+    await expect(page.getByText(startApplication)).toBeVisible();
 
-  await expect(
-    page.getByText(
-      `NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program $YOUR_COMMAND_OPTIONS`
-    )
-  ).toBeVisible();
+    const applicationCommand = page.getByTestId(
+      'setup.start-application-command',
+    );
+    await expect(applicationCommand).toContainText(
+      `NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program $YOUR_COMMAND_OPTIONS`,
+    );
 
-  await expect(
-    page.getByText(
-      "Copy this command into your host to enable infrastructure and logs metrics."
-    )
-  ).toBeVisible();
+    await expect(
+      page.getByText(
+        'Copy this command into your host to enable infrastructure and logs metrics.',
+      ),
+    ).toBeVisible();
 
-  /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NEW_RELIC_ACCOUNT_ID=`,
+    );
 
-  await page.getByRole("tab", { name: "Windows" }).click();
+    const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-  /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+    await tabItems.nth(1).click();
 
-  await page.getByRole("tab", { name: "Docker" }).click();
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `$env:NEW_RELIC_REGION=`,
+    );
 
-  /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+    await tabItems.nth(2).click();
 
-  const [pythonInstallationDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.install-python-link").click(),
-  ]);
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NRIA_LICENSE_KEY=`,
+    );
 
-  await page.waitForLoadState("networkidle");
+    const [pythonInstallationDoc] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.getByTestId('setup.install-python-link').click(),
+    ]);
 
-  await pythonInstallationDoc
-    .getByRole("heading", {
-      name: "Install the Python agent",
-    })
-    .click();
+    await page.waitForLoadState('networkidle');
 
-  await pythonInstallationDoc.close();
+    await pythonInstallationDoc
+      .getByRole('heading', {
+        name: 'Install the Python agent',
+      })
+      .click();
 
-  const [pythonInstallationOnDockerDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.install-docker-link").click(),
-  ]);
-  await page.waitForLoadState("networkidle");
+    await pythonInstallationDoc.close();
 
-  await pythonInstallationOnDockerDoc
-    .getByRole("heading", {
-      name: "Install the Python agent",
-    })
-    .click();
+    const [pythonInstallationOnDockerDoc] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.getByTestId('setup.install-docker-link').click(),
+    ]);
 
-  await pythonInstallationOnDockerDoc.close();
+    await page.waitForLoadState('networkidle');
 
-  const [appNamingDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.app-naming-link").click(),
-  ]);
+    await pythonInstallationOnDockerDoc
+      .getByRole('heading', {
+        name: 'Install the Python agent',
+      })
+      .click();
 
-  await page.waitForLoadState("networkidle");
+    await pythonInstallationOnDockerDoc.close();
 
-  await appNamingDoc
-    .getByRole("heading", {
-      name: "Name or change the name of your application",
-    })
-    .click();
+    const [appNamingDoc] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.getByTestId('setup.app-naming-link').click(),
+    ]);
 
-  await appNamingDoc.close();
+    await page.waitForLoadState('networkidle');
 
-  const [distributedTracingLink] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.distributed-tracing-link").click(),
-  ]);
+    await appNamingDoc
+      .getByRole('heading', {
+        name: 'Name or change the name of your application',
+      })
+      .click();
 
-  await distributedTracingLink
-    .getByRole("heading", {
-      name: "Introduction to distributed tracing",
-    })
-    .click();
+    await appNamingDoc.close();
 
-  await distributedTracingLink.close();
+    const [distributedTracingLink] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.getByTestId('setup.distributed-tracing-link').click(),
+    ]);
 
-  const [compatibilityDoc] = await Promise.all([
-    page.waitForEvent("popup"),
-    await page.getByTestId("setup.compatibility-requirement-link").click(),
-  ]);
+    await distributedTracingLink
+      .getByRole('heading', {
+        name: 'Introduction to distributed tracing',
+      })
+      .click();
 
-  await compatibilityDoc
-    .getByRole("heading", {
-      name: "Compatibility and requirements for the Python agent",
-    })
-    .click();
+    await distributedTracingLink.close();
 
-  await compatibilityDoc.close();
+    const [compatibilityDoc] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.getByTestId('setup.compatibility-requirement-link').click(),
+    ]);
 
-  await page.getByTestId("platform.user-feedback-button").click();
+    await compatibilityDoc
+      .getByRole('heading', {
+        name: 'Compatibility and requirements for the Python agent',
+      })
+      .click();
 
-  await page
-    .getByRole("heading", { name: "Do you have specific feedback for us?" })
-    .click();
+    await compatibilityDoc.close();
 
-  await page.getByRole("button", { name: "Close modal" }).click();
+    await page.getByTestId('platform.user-feedback-button').click();
 
-  await page.getByTestId("platform.stacked-view-close-button").click();
+    await page
+      .getByRole('heading', { name: 'Do you have specific feedback for us?' })
+      .click();
 
-  await page.getByTestId("install-newrelic.button-back-to-home").click();
+    await page.getByRole('button', { name: 'Close modal' }).click();
+
+    await page.getByTestId('platform.stacked-view-close-button').click();
+
+    await page.getByTestId('install-newrelic.button-back-to-home').click();
 });

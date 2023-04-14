@@ -24,319 +24,351 @@ test.afterAll(async () => {
 });
 
 test.describe("Java Guided installation", () => {
-  test("should show different methods to install the Java agent", async () => {
+  test('should guide steps to install the Java agent', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-java").click();
+    await page.getByTestId('install-newrelic.tile-java').click();
 
-    await expect(page.getByText("Select your language (Java)")).toBeVisible();
+    const selectEnvironmentHeading = await page.locator(
+      `div[data-test-id="install-newrelic.steps-item"]`,
+    );
 
-    await expect(page.getByText("Install the Java agent")).toBeVisible();
+    await expect(selectEnvironmentHeading).toContainText(
+      'Select your language (Java)',
+    );
+
+    const installJava = await page.getByTestId('install-newrelic.title');
+
+    await expect(installJava).toContainText('Install the Java agent');
 
     await page
-      .getByTestId("install-newrelic.button-begin-installation")
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
-    // await expect(
-    //   page.getByText("How do you want to install the Java agent?")
-    // ).toBeVisible();
+    const installationTitle = page.getByTestId(
+      'install-newrelic.installation-title',
+    );
+    await expect(installationTitle).toContainText(
+      'How do you want to install the Java agent?',
+    );
 
-    await page.getByRole("heading", { name: "On a host" }).isVisible();
+    const onHost = page.getByTestId('install-newrelic.java-on-host');
 
-    await page.getByRole("heading", { name: "Gradle" }).isVisible();
+    await expect(onHost).toContainText('On a host');
 
-    await page.getByRole("heading", { name: "Maven" }).isVisible();
+    const gradle = page.getByTestId('install-newrelic.java-gradle-link');
 
-    await page.getByRole("heading", { name: "Docker" }).isVisible();
+    await expect(gradle).toContainText('Gradle');
 
-    await page.getByRole("heading", { name: "AWS Lambda" }).isVisible();
+    const maven = page.getByTestId('install-newrelic.java-maven-link');
 
-    const [docsLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs" }).click(),
+    await expect(maven).toContainText('Maven');
+
+    const docker = page.getByTestId('install-newrelic.java-docker-link');
+
+    await expect(docker).toContainText('Docker');
+
+    await page.getByRole('heading', { name: 'AWS Lambda' }).isVisible();
+
+    const [footerSeeOurDocs] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.docs-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Guided install overview" })
+      .getByRole('heading', { name: 'Guided install overview' })
       .isVisible();
 
-    await docsLink.close();
+    await footerSeeOurDocs.close();
 
-    await page.getByText("Give feedback").click();
+    await page.getByTestId('install-newrelic.feedback-link').click();
 
-    await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
+    const feedbackTitle = await page.getByTestId(
+      'install-newrelic.modal-title',
+    );
 
-    await page.getByRole("button", { name: "Close modal" }).click();
+    await expect(feedbackTitle).toContainText('Help us improve New Relic One');
 
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
+    await page.getByRole('button', { name: 'Close modal' }).click();
+
+    await page.getByTestId('install-newrelic.apm-footer-back-button').click();
   });
 
-  test("should guide steps to install the Java agent through Gradle, Maven and Docker", async () => {
+  test('should guide steps to install the Java agent through Gradle, Maven and Docker', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-java").click();
+    await page.getByTestId('install-newrelic.tile-java').click();
 
     await page
-      .getByTestId("install-newrelic.button-begin-installation")
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    await page.waitForLoadState("networkidle");
-
-//     await expect(
-//       page.getByText("How do you want to install the Java agent?")
-//     ).toBeVisible();
-
     const [gradleDocsLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.java-gradle-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.java-gradle-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Monitor your Java app" })
+      .getByRole('heading', { name: 'Monitor your Java app' })
       .isVisible();
 
     await gradleDocsLink.close();
 
     const [mavenDocsLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.java-maven-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.java-maven-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", { name: "Monitor your Java app" })
+      .getByRole('heading', { name: 'Monitor your Java app' })
       .isVisible();
 
     await mavenDocsLink.close();
 
     const [dockerDocsLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.java-docker-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.java-docker-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByRole("heading", {
-        name: "Install New Relic Java agent for Docker",
+      .getByRole('heading', {
+        name: 'Install New Relic Java agent for Docker',
       })
       .isVisible();
 
-    await page.waitForLoadState("networkidle");
-
     await dockerDocsLink.close();
-
-    await page.getByTestId("install-newrelic.apm-footer-back-button").click();
   });
 
-  test("should guide steps to install the Java agent through host", async () => {
+  test('should guide steps to install the Java agent through host', async () => {
     test.slow();
 
-    await page.getByText("APM (Application Monitoring)").click();
+    await page.getByTestId('install-newrelic.apm-tab').click();
 
-    await page.getByTestId("install-newrelic.tile-java").click();
-
-    await page
-      .getByTestId("install-newrelic.button-begin-installation")
-      .click();
-
-    await page.waitForLoadState("networkidle");
-
-    // await expect(
-    //   page.getByText("How do you want to install the Java agent?")
-    // ).toBeVisible();
+    await page.getByTestId('install-newrelic.tile-java').click();
 
     await page
-      .getByText("Instrument your app running on a host", { exact: true })
+      .getByTestId('install-newrelic.button-begin-installation')
       .click();
 
-    const instllationCommand = `curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh`;
+    await page.getByTestId('install-newrelic.java-on-host').click();
 
     await expect(
-      page.getByTestId("install-newrelic.code-snippet")
-    ).toContainText(instllationCommand);
+      page.getByTestId('install-newrelic.code-snippet'),
+    ).toContainText('NEW_RELIC_API_KEY=NRAK');
 
     await expect(
-      page.getByTestId("install-newrelic.code-snippet")
-    ).toContainText("NEW_RELIC_API_KEY=NRAK");
-
-    await expect(
-      page.getByTestId("install-newrelic.code-snippet")
-    ).toContainText("java-agent-installer");
+      page.getByTestId('install-newrelic.code-snippet'),
+    ).toContainText('java-agent-installer');
 
     const [footerDocsLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("install-newrelic.docs-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('install-newrelic.docs-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
-    await page.getByText("Guided install overview").isVisible();
+    await page.getByText('Guided install overview').isVisible();
 
     await footerDocsLink.close();
 
-    await page.getByTestId("install-newrelic.feedback-link").click();
+    await page.getByTestId('install-newrelic.feedback-link').click();
 
-    await expect(
-      page.getByText("How is New Relic One working for you, right now?")
-    ).toBeVisible();
+    const feedbackTitle = page.getByTestId('install-newrelic.feedback-title');
 
-    await page.getByRole("button", { name: "Close modal" }).click();
+    await expect(feedbackTitle).toContainText(
+      'How is New Relic One working for you, right now?',
+    );
+
+    await page.getByRole('button', { name: 'Close modal' }).click();
 
     await page
-      .getByTestId("install-newrelic.footer-action-java-agent-installer")
+      .getByTestId('install-newrelic.footer-action-java-agent-installer')
       .click();
 
-    await expect(
-      page.getByText("Add your Java application data")
-    ).toBeVisible();
+    const addJava = page.getByTestId('setup.heading');
 
-    await page.getByTestId("setup.download-button").isDisabled();
+    await expect(addJava).toContainText('Add your Java application data');
 
-    await expect(page.getByText("You must complete step 1")).toBeVisible();
+    await page.getByTestId('setup.download-button').isDisabled();
+
+    const warningText = page.getByTestId('setup.warning-text');
+
+    await expect(warningText).toContainText('You must complete step 1');
 
     const [seeAppNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByRole("link", { name: "See our docs on naming" }).click(),
+      page.waitForEvent('popup'),
+      page.getByRole('link', { name: 'See our docs on naming' }).click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByText("Name or change the name of your application")
+      .getByText('Name or change the name of your application')
       .isVisible();
 
     await seeAppNamingDoc.close();
 
-    const applicationNameContainer = await page.locator(
-      'div[data-test-id="setup.naming-textfield"]'
+    // The below code is a bit complicated, hence proceeding with the above code for "See our docs on naming" link
+
+    //  const paragraphElement = await page.locator(`p[data-test-id="setup.naming-doc"]`);
+    //  const linkElement = await paragraphElement.locator('a');
+    //  await linkElement.nth(0).click();
+    //  await seeAppNamingDoc.close();
+
+    const applicationNameContainer = page.locator(
+      'div[data-test-id="setup.naming-textfield"]',
     );
 
-    const applicationNameInput = await applicationNameContainer.locator(
-      'input[type="text"]'
+    const applicationNameInput =
+      applicationNameContainer.locator('input[type="text"]');
+
+    await applicationNameInput.fill('testApp');
+
+    await page.getByTestId('setup.download-button').isEnabled();
+
+    await page.getByText('You must complete step 1').isHidden();
+
+    const installAgent = page.getByTestId('setup.download-install-agent');
+
+    await expect(installAgent).toContainText('Download and install the agent');
+
+    const command = await page.getByTestId('setup.install-agent-command');
+
+    await expect(command).toContainText(
+      `curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip`,
     );
 
-    await applicationNameInput.fill("testApp");
+    const javaInstruction = page.getByTestId('setup.java-instructions');
 
-    await page.getByTestId("setup.download-button").isEnabled();
+    await expect(javaInstruction).toContainText(
+      'Get specific instructions for your Java set up',
+    );
 
-    await page.getByText("You must complete step 1").isHidden();
+    const tomCat = await page.locator('div[data-test-id="setup.tomcat"]');
 
-    const downloadAndInstallCommand = `curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip`;
+    const tomCatRadio = await tomCat.locator('input[type="radio"]');
 
-    await expect(page.getByText(downloadAndInstallCommand)).toBeVisible();
-
-    await expect(
-      page.getByText("Get specific instructions for your Java set up")
-    ).toBeVisible();
-
-    await page.getByRole("radio", { name: "Tomcat" }).click();
+    await tomCatRadio.check();
 
     await expect(
       page.getByText(
-        "You can pass the -javaagent argument on Linux with catalina.sh. On Windows, you can use catalina.bat or the GUI."
-      )
+        'You can pass the -javaagent argument on Linux with catalina.sh. On Windows, you can use catalina.bat or the GUI.',
+      ),
     ).toBeVisible();
 
-    await expect(
-      page.getByText("With catalina.sh", { exact: true })
-    ).toBeVisible();
+    const catalinaSH = await page.locator(
+      'div[data-test-id="setup.catalina-arrow-commands-With catalina.sh"]',
+    );
 
-    await expect(
-      page.getByText("With catalina.bat", { exact: true })
-    ).toBeVisible();
+    await expect(catalinaSH).toContainText('With catalina.sh');
 
-    await expect(page.getByText("With Windows", { exact: true })).toBeVisible();
+    const catalinaBAT = await page.locator(
+      'div[data-test-id="setup.catalina-arrow-commands-With catalina.bat"]',
+    );
 
-    await page.getByText("With catalina.sh", { exact: true }).click();
+    await expect(catalinaBAT).toContainText('With catalina.bat');
 
-    const catalinaCommand = `export CATALINA_OPTS="$CATALINA_OPTS -javaagent:FULL_PATH_TO/newrelic.jar"`;
+    const withWindows = await page.locator(
+      'div[data-test-id="setup.catalina-arrow-commands-With Windows"]',
+    );
 
-    await expect(page.getByText(catalinaCommand)).toBeVisible();
+    await expect(withWindows).toContainText('With Windows');
 
-    const stepFive =
-      "Deploy your application to start using the Java agent to send data to New Relic.";
+    await catalinaSH.click();
 
-    await expect(page.getByText(stepFive)).toBeVisible();
+    const catalinaSHCommand = await page.getByTestId(
+      'setup.catalina-sh-command',
+    );
 
-    await expect(
-      page.getByText("Connect with your logs and infrastructure")
-    ).toBeVisible();
+    await expect(catalinaSHCommand).toContainText(
+      'export CATALINA_OPTS="$CATALINA_OPTS -javaagent:FULL_PATH_TO/newrelic.jar"',
+    );
 
-    await expect(
-      page.getByText(
-        "Copy this command into your host to enable infrastructure and logs metrics."
-      )
-    ).toBeVisible();
+    const logsInfrastructure = page.getByTestId('setup.logs-infrastructure');
 
-    /* NEED TO DEFINE data-test-id FOR LINUX COMMAND SNIPPET */
+    await expect(logsInfrastructure).toContainText(
+      'Connect with your logs and infrastructure',
+    );
 
-    await page.getByRole("tab", { name: "Windows" }).click();
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NEW_RELIC_API_KEY=NRAK-`,
+    );
 
-    /* NEED TO DEFINE data-test-id FOR WINDOWS COMMAND SNIPPET */
+    const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-    await page.getByRole("tab", { name: "Docker" }).click();
+    await tabItems.nth(1).click();
 
-    /* NEED TO DEFINE data-test-id FOR DOCKER COMMAND SNIPPET */
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `$env:NEW_RELIC_API_KEY=`,
+    );
+
+    await tabItems.nth(2).click();
+
+    await expect(page.getByTestId('setup.agent-commands')).toContainText(
+      `NRIA_LICENSE_KEY=`,
+    );
 
     const [installJavaAgentDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.install-java-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.install-java-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
-    await page.getByText("Monitor your Java app").isVisible();
+    await page.getByText('Monitor your Java app').isVisible();
 
     await installJavaAgentDoc.close();
 
     const [appNamingDoc] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.app-naming-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.app-naming-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     await page
-      .getByText("Name or change the name of your application")
+      .getByText('Name or change the name of your application')
       .isVisible();
 
     await appNamingDoc.close();
 
     const [distributedTracingLink] = await Promise.all([
-      page.waitForEvent("popup"),
-      page.getByTestId("setup.distributed-tracing-link").click(),
+      page.waitForEvent('popup'),
+      page.getByTestId('setup.distributed-tracing-link').click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
-    await page.getByText("Introduction to distributed tracing").isVisible();
+    await page.getByText('Introduction to distributed tracing').isVisible();
 
     await distributedTracingLink.close();
 
-    await page.getByTestId("platform.user-feedback-button").nth(1).click();
+    await page.getByTestId('platform.user-feedback-button').nth(1).click();
 
     await page
-      .getByRole("heading", { name: "Do you have specific feedback for us?" })
-      .isVisible();
+      .getByRole('heading', { name: 'Do you have specific feedback for us?' })
+      .click();
 
-    await page.getByRole("button", { name: "Close modal" }).click();
+    await page.getByRole('button', { name: 'Close modal' }).click();
 
-    await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
+    await page.getByTestId('platform.stacked-view-close-button').nth(1).click();
 
     await page
-      .getByTestId("install-newrelic.footer-action-back-button")
+      .getByTestId('install-newrelic.footer-action-back-button')
       .click();
   });
 });
