@@ -46,13 +46,13 @@ Currently scheduled to run once every 60 minuites. Schedule can be edited in git
 
     ```sh
         test.beforeEach(async () => {
-        browser = await chromium.launch();
-        context = await browser.newContext({
-            storageState: "e2e/sessions/storageState.json",
-        });
-        page = await context.newPage();
-        await page.waitForLoadState("networkidle");
-        await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
+            browser = await chromium.launch();
+            context = await browser.newContext({
+                storageState: "e2e/sessions/storageState.json",
+            });
+            page = await context.newPage();
+            await page.waitForLoadState("networkidle");
+            await page.goto("/nr1-core/install-newrelic/installation-plan?e2e-test&");
         });
     ```
 
