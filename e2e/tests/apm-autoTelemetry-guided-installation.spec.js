@@ -26,23 +26,61 @@ test.afterAll(async () => {
 test("should show steps to install auto-telemetry for Kubernetes with pixie", async () => {
   test.slow();
 
-  await page.getByText("APM (Application Monitoring)").click();
+  await page.getByTestId("install-newrelic.apm-tab").click();
 
   await page.getByTestId("install-newrelic.tile-kubernetes").click();
 
-  await expect(
-    page.getByText("Select your language (Kubernetes)")
-  ).toBeVisible();
+  const selectLanguageHeading = await page.locator(
+    `div[data-test-id="install-newrelic.steps-item"]`
+  );
 
-  await expect(
-    page.getByText("Install the New Relic Kubernetes integration with Pixie")
-  ).toBeVisible();
+  await expect(selectLanguageHeading).toContainText(
+    "Select your language (Kubernetes)"
+  );
+
+  const installationTitle = await page.getByTestId("install-newrelic.title");
+
+  await expect(installationTitle).toContainText(
+    "Install the New Relic Kubernetes integration with Pixie"
+  );
 
   await page.getByTestId("install-newrelic.button-begin-installation").click();
 
   await page.waitForLoadState("networkidle");
 
-  await page.getByRole("button", { name: "Continue" }).isDisabled();
+  await expect(
+    page.getByText(
+      `Get instant service-level insights, full-body requests, and application profiles through eBPF.`
+    )
+  ).toBeVisible();
+
+  const [footerSeeOurDocs] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByTestId("install-newrelic.docs-link").click(),
+  ]);
+
+  await page.waitForLoadState("networkidle");
+
+  await page
+    .getByRole("heading", {
+      name: "Introduction to the Kubernetes integration",
+    })
+    .isVisible();
+
+  await footerSeeOurDocs.close();
+
+  await page.getByTestId("install-newrelic.feedback-link").click();
+
+  const feedbackTitle = await page.getByTestId("install-newrelic.modal-title");
+
+  await expect(feedbackTitle).toContainText("Help us improve New Relic One");
+
+  //replace this with test id
+  await page.getByRole("button", { name: "Close modal" }).click();
+
+  await page
+  .getByTestId("install-newrelic.footer-action-continue-button")
+  .isDisabled();
 
   const clusterNameContainer = await page.locator(
     'div[data-test-id="install-newrelic.cluster-textfield"]'
@@ -64,43 +102,53 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
 
   await page.waitForLoadState("networkidle");
 
-  await expect(
-    page.getByText("Select the additional data you want to gather")
-  ).toBeVisible();
+  const additionalData = await page.getByTestId(
+    "install-newrelic.gather-additional-data"
+  );
 
-  // /* need to define test-id */
-  // expect(await page.locator("#checkbox-0").isChecked()).toBeTruthy();
-  // /* need to define test-id */
-  // expect(await page.locator("#checkbox-3").isChecked()).toBeTruthy();
-  // /* need to define test-id */
-  // expect(await page.locator("#checkbox-5").isChecked()).toBeTruthy();
-
-  // check entered cluster name
-  await expect(page.getByText("TestCluster")).toBeVisible();
+  await expect(additionalData).toContainText(
+    "Select the additional data you want to gather"
+  );
 
   await page
     .getByTestId("install-newrelic.additional-data-continue-button")
     .click();
 
-  await expect(
-    page.getByText(
-      "To allow data through your firewall, set the HTTPS_PROXY environment variable to your proxy’s URL before you run the command below."
-    )
-  ).toBeVisible();
+  await page.waitForLoadState("networkidle");
 
-  await expect(page.getByTestId("install-newrelic.code-snippet")).toContainText(
-    `NR_CLI_CLUSTERNAME=TestCluster NR_CLI_NAMESPACE=newrelic`
+  const installationMethods = await page.getByTestId(
+    "install-newrelic.installation-methods"
   );
 
-  await page.getByRole("tab", { name: "Helm 3" }).click();
+  await expect(installationMethods).toContainText("Choose install method");
 
-  await expect(page.getByTestId("install-newrelic.code-snippet")).toContainText(
-    `helm repo add newrelic https://helm-charts.newrelic.com && helm repo update `
+  const defaultHelmUse = await page.locator(
+    `div[data-test-id="install-newrelic.helm-heading"]`
   );
 
-  await page.getByRole("tab", { name: "Manifest" }).click();
+  await expect(defaultHelmUse).toContainText(
+    "Guided install uses Helm by default"
+  );
 
-  await expect(page.getByTestId("install-newrelic.code-snippet")).toContainText(
+  // docs are missing for helm
+
+  // firewall doc is missing
+
+  const codeSnippet = page.locator(
+    "data-test-id=install-newrelic.code-snippet"
+  );
+
+  await expect(codeSnippet).toContainText("NR_CLI_CLUSTERNAME=TestCluster");
+
+  await page.getByTestId("install-newrelic.tab-helm-3").click();
+
+  await expect(codeSnippet).toContainText(
+    "helm repo add newrelic https://helm-charts.newrelic.com && helm repo update"
+  );
+
+  await page.getByTestId("install-newrelic.tab-manifest").click();
+
+  await expect(codeSnippet).toContainText(
     `"pixie-chart.clusterName":"TestCluster"`
   );
 
@@ -108,46 +156,25 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
     .getByTestId("install-newrelic.install-methods-continue-button")
     .click();
 
-  await expect(page.getByText("Listening for data")).toBeVisible();
+  const listenData = await page.getByTestId("install-newrelic.listen-data");
 
-  await expect(
-    page.getByText("Pixie: get ready for next-gen K8s observability!")
-  ).toBeVisible();
+  await expect(listenData).toContainText("Listening for data");
+
+  const pixieHeading = await page.getByTestId("install-newrelic.pixie-heading");
+
+  await expect(pixieHeading).toContainText(
+    "Pixie: get ready for next-gen K8s observability!"
+  );
 
   await page.getByTestId("install-newrelic.lastpage-back-button").click();
-
-  await page.waitForLoadState("networkidle");
 
   await page
     .getByTestId("install-newrelic.install-methods-back-button")
     .click();
 
-  await page.waitForLoadState("networkidle");
-
   await page
     .getByTestId("install-newrelic.additional-data-back-button")
     .click();
-
-  const [footerSeeOurDocs] = await Promise.all([
-    page.waitForEvent("popup"),
-    page.getByTestId("install-newrelic.docs-link").click(),
-  ]);
-
-  await page.waitForLoadState("networkidle");
-
-  await page
-    .getByRole("heading", {
-      name: "Introduction to the Kubernetes integration",
-    })
-    .isVisible();
-
-  await footerSeeOurDocs.close();
-
-  await page.getByTestId("install-newrelic.feedback-link").click();
-
-  await expect(page.getByText("Help us improve New Relic One")).toBeVisible();
-
-  await page.getByRole("button", { name: "Close modal" }).click();
 
   await page.getByTestId("install-newrelic.footer-action-back-button").click();
 

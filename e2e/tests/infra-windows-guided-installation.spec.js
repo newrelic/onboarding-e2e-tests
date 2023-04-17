@@ -26,159 +26,162 @@ test.afterAll(async () => {
 test("should guide on steps to install Windows", async () => {
   test.slow();
 
-  await page.getByTestId('install-newrelic.tile-windows').click();
+  await page.getByTestId("install-newrelic.tile-windows").click();
 
-    const selectEnvironmentHeading = await page.locator(
-      `div[data-test-id="install-newrelic.steps-item"]`,
-    );
+  const selectEnvironmentHeading = await page.locator(
+    `div[data-test-id="install-newrelic.steps-item"]`
+  );
 
-    await expect(selectEnvironmentHeading).toContainText(
-      'Select your environment (Windows)',
-    );
+  await expect(selectEnvironmentHeading).toContainText(
+    "Select your environment (Windows)"
+  );
 
-    await page
-      .getByTestId('install-newrelic.button-begin-installation')
-      .click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-    await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
 
-    await page.getByTestId('install-newrelic.heading-text').isVisible();
+  // await page.getByTestId('install-newrelic.heading-text').isVisible();
 
-    await page.getByTestId('install-newrelic.customization-button').click();
+  const header = page.locator("data-test-id=install-newrelic.heading-text");
 
-    const windowsCodeSnippet = page.locator(
-      'data-test-id=install-newrelic.code-snippet',
-    );
+  await expect(header).toContainText(
+    "Copy and run this command in PowerShell and run as administrator"
+  );
 
-    await expect(windowsCodeSnippet).toContainText(
-      "[Net.ServicePointManager]::SecurityProtocol = 'tls12, tls'",
-    );
+  await page.getByTestId("install-newrelic.customization-button").click();
 
-    const customizationCLIOption = await page.locator(
-      'div[data-test-id="install-newrelic.cli-checkbox"]',
-    );
+  const windowsCodeSnippet = page.locator(
+    "data-test-id=install-newrelic.code-snippet"
+  );
 
-    const customizationCLICheckbox = await customizationCLIOption.locator(
-      'input[type="checkbox"]',
-    );
+  await expect(windowsCodeSnippet).toContainText(
+    "[Net.ServicePointManager]::SecurityProtocol = 'tls12, tls'"
+  );
 
-    await customizationCLICheckbox.isChecked();
+  const customizationCLIOption = await page.locator(
+    'div[data-test-id="install-newrelic.cli-checkbox"]'
+  );
 
-    await customizationCLICheckbox.isDisabled();
+  const customizationCLICheckbox = await customizationCLIOption.locator(
+    'input[type="checkbox"]'
+  );
 
-    const customizationPromptOption = await page.locator(
-      'div[data-test-id="install-newrelic.prompt-checkbox"]',
-    );
+  await customizationCLICheckbox.isChecked();
 
-    await customizationPromptOption.locator('input[type="checkbox"]').check();
+  await customizationCLICheckbox.isDisabled();
 
-    await expect(windowsCodeSnippet).toContainText('-y');
+  const customizationPromptOption = await page.locator(
+    'div[data-test-id="install-newrelic.prompt-checkbox"]'
+  );
 
-    const customizationTags = await page.locator(
-      'div[data-test-id="install-newrelic.tag-input"]',
-    );
+  await customizationPromptOption.locator('input[type="checkbox"]').check();
 
-    const tagInput = await customizationTags.locator('input[type="text"]');
+  await expect(windowsCodeSnippet).toContainText("-y");
 
-    await tagInput.fill('randomText');
+  const customizationProxyOption = await page.locator(
+    'div[data-test-id="install-newrelic.proxy-checkbox"]'
+  );
 
-    await tagInput.press('Enter');
+  await customizationProxyOption.locator('input[type="checkbox"]').check();
 
-    await expect(customizationTags).toContainText(
-      'Tag contains invalid character',
-    );
+  const customizationProxyInput = await page.locator(
+    'div[data-test-id="install-newrelic.proxy-input"]'
+  );
 
-    await tagInput.fill('');
+  await expect(customizationProxyInput).toContainText("Enter proxy URL");
 
-    await tagInput.fill('Test:5');
+  const proxyTextField = await customizationProxyInput.locator(
+    'input[type="text"]'
+  );
 
-    await tagInput.press('Enter');
+  await proxyTextField.fill("randomText");
 
-    await expect(page.getByText('Tag contains invalid character')).toBeHidden();
+  await expect(customizationProxyInput).toContainText("Invalid URL");
 
-    await expect(windowsCodeSnippet).toContainText('--tag Test:5');
+  await proxyTextField.fill("");
 
-    const customizationProxyOption = await page.locator(
-      'div[data-test-id="install-newrelic.proxy-checkbox"]',
-    );
+  await proxyTextField.fill("http://test-proxy:8080");
 
-    await customizationProxyOption.locator('input[type="checkbox"]').check();
+  await expect(windowsCodeSnippet).toContainText(
+    "[Net.ServicePointManager]::SecurityProtocol = 'tls12, tls'; $env:HTTPS_PROXY='http://test-proxy:8080';"
+  );
 
-    const customizationProxyInput = await page.locator(
-      'div[data-test-id="install-newrelic.proxy-input"]',
-    );
+  await customizationProxyOption.locator('input[type="checkbox"]').uncheck();
 
-    await expect(customizationProxyInput).toContainText('Enter proxy URL');
+  const customizationTags = await page.locator(
+    'div[data-test-id="install-newrelic.tag-input"]'
+  );
 
-    const proxyTextField = await customizationProxyInput.locator(
-      'input[type="text"]',
-    );
+  const tagInput = await customizationTags.locator('input[type="text"]');
 
-    await proxyTextField.fill('randomText');
+  await tagInput.fill("randomText");
 
-    await expect(customizationProxyInput).toContainText('Invalid URL');
+  await tagInput.press("Enter");
 
-    await proxyTextField.fill('');
+  await expect(customizationTags).toContainText(
+    "Tag contains invalid character"
+  );
 
-    await proxyTextField.fill('http://test-proxy:8080');
+  await tagInput.fill("");
 
-    await expect(windowsCodeSnippet).toContainText(
-      "[Net.ServicePointManager]::SecurityProtocol = 'tls12, tls'; $env:HTTPS_PROXY='http://test-proxy:8080';",
-    );
+  await tagInput.fill("Test:5");
 
-    await customizationProxyOption.locator('input[type="checkbox"]').uncheck();
+  await tagInput.press("Enter");
 
-    const accessPointsInfo = await page.locator(
-      `div[data-test-id="install-newrelic.network-traffic-doc"]`,
-    );
+  await expect(page.getByText("Tag contains invalid character")).toBeHidden();
 
-    const useProxy = await accessPointsInfo.locator('button');
+  await expect(windowsCodeSnippet).toContainText("--tag Test:5");
 
-    await useProxy.click();
+  const accessPointsInfo = await page.locator(
+    `div[data-test-id="install-newrelic.network-traffic-doc"]`
+  );
 
-    await customizationProxyOption
-      .locator('input[type="checkbox"]')
-      .isChecked();
+  const useProxy = await accessPointsInfo.locator("button");
 
-    const networkTrafficDoc = await accessPointsInfo.locator('a');
+  await useProxy.click();
 
-    const [docsLink] = await Promise.all([
-      page.waitForEvent('popup'),
-      await networkTrafficDoc.click(),
-    ]);
+  await customizationProxyOption.locator('input[type="checkbox"]').isChecked();
 
-    await page.waitForLoadState('networkidle');
+  await expect(customizationProxyInput).toContainText("Enter proxy URL");
 
-    await page.getByRole('heading', { name: 'Network traffic' }).isVisible();
+  await customizationProxyOption.locator('input[type="checkbox"]').uncheck();
 
-    await docsLink.close();
+  const networkTrafficDoc = await accessPointsInfo.locator("a");
 
-    const [footerSeeOurDocs] = await Promise.all([
-      page.waitForEvent('popup'),
-      page.getByTestId('install-newrelic.docs-link').click(),
-    ]);
+  const [docsLink] = await Promise.all([
+    page.waitForEvent("popup"),
+    await networkTrafficDoc.click(),
+  ]);
 
-    await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
 
-    await page
-      .getByRole('heading', { name: 'Guided install overview' })
-      .isVisible();
+  await page.getByRole("heading", { name: "Network traffic" }).isVisible();
 
-    await footerSeeOurDocs.close();
+  await docsLink.close();
 
-    await page.getByTestId('install-newrelic.feedback-link').click();
+  const [footerSeeOurDocs] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByTestId("install-newrelic.docs-link").click(),
+  ]);
 
-    const feedbackTitle = await page.getByTestId(
-      'install-newrelic.modal-title',
-    );
+  await page.waitForLoadState("networkidle");
 
-    await expect(feedbackTitle).toContainText('Help us improve New Relic One');
+  await page
+    .getByRole("heading", { name: "Guided install overview" })
+    .isVisible();
 
-    await page.getByRole('button', { name: 'Close modal' }).click();
+  await footerSeeOurDocs.close();
 
-    await page
-      .getByTestId('install-newrelic.footer-action-back-button')
-      .click();
+  await page.getByTestId("install-newrelic.feedback-link").click();
 
-    await page.getByTestId('install-newrelic.button-back-to-home').click();
+  const feedbackTitle = await page.getByTestId("install-newrelic.modal-title");
+
+  await expect(feedbackTitle).toContainText("Help us improve New Relic One");
+
+  //replace this with test id
+  await page.getByRole("button", { name: "Close modal" }).click();
+
+  await page.getByTestId("install-newrelic.footer-action-back-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });

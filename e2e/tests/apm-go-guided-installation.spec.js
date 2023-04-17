@@ -26,215 +26,225 @@ test.afterAll(async () => {
 test("should shows steps to install the Go agent", async () => {
   test.slow();
 
-  await page.getByTestId('install-newrelic.apm-tab').click();
+  await page.getByTestId("install-newrelic.apm-tab").click();
 
-    await page.getByTestId('install-newrelic.tile-go').click();
+  await page.getByTestId("install-newrelic.tile-go").click();
 
-    const selectEnvironmentHeading = await page.locator(
-      `div[data-test-id="install-newrelic.steps-item"]`,
-    );
+  const selectEnvironmentHeading = await page.locator(
+    `div[data-test-id="install-newrelic.steps-item"]`
+  );
 
-    await expect(selectEnvironmentHeading).toContainText(
-      'Select your language (Go)',
-    );
+  await expect(selectEnvironmentHeading).toContainText(
+    "Select your language (Go)"
+  );
 
-    const installGo = await page.getByTestId('install-newrelic.title');
-    await expect(installGo).toContainText('Install the Go agent');
+  const installGoTitle = await page.getByTestId("install-newrelic.title");
 
-    await page
-      .getByTestId('install-newrelic.button-begin-installation')
-      .click();
+  await expect(installGoTitle).toContainText("Install the Go agent");
 
-    await page.waitForLoadState('networkidle');
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-    const addGo = page.getByTestId('setup.heading');
+  await page.waitForLoadState("networkidle");
 
-    await expect(addGo).toContainText('Add your Go application data');
+  const addApplicationData = page.getByTestId("setup.heading");
 
-    const appName = page.getByTestId('setup.application-name');
+  await expect(addApplicationData).toContainText(
+    "Add your Go application data"
+  );
 
-    await expect(appName).toContainText('Give your application a name');
+  const appName = page.getByTestId("setup.application-name");
 
-    const [seeAppNamingDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      page.getByRole('link', { name: 'See our docs on naming' }).click(),
-    ]);
+  await expect(appName).toContainText("Give your application a name");
 
-    await page.waitForLoadState('networkidle');
+  // replace this with test id
+  const [seeAppNamingDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByRole("link", { name: "See our docs on naming" }).click(),
+  ]);
 
-    await page
-      .getByText('Name or change the name of your application')
-      .isVisible();
+  await page.waitForLoadState("networkidle");
 
-    await seeAppNamingDoc.close();
+  await page
+    .getByText("Name or change the name of your application")
+    .isVisible();
 
-    await page.getByTestId('setup.see-your-data-button').isDisabled();
+  await seeAppNamingDoc.close();
 
-    const appNameDiv = await page.locator(
-      'div[data-test-id="setup.naming-textfield"]',
-    );
-    const appNameField = await appNameDiv.locator('input[type="text"]');
+  await page.getByTestId("setup.see-your-data-button").isDisabled();
 
-    await appNameField.fill('testApp');
+  const appNameDiv = await page.locator(
+    'div[data-test-id="setup.naming-textfield"]'
+  );
+  const appNameField = await appNameDiv.locator('input[type="text"]');
 
-    await page.getByTestId('setup.see-your-data-button').isEnabled();
+  await appNameField.fill("testApp");
 
-    const commandTitle = page.getByTestId('setup.command-title');
-    await expect(commandTitle).toContainText(
-      'Run this command to get the Go agent:',
-    );
+  await page.getByTestId("setup.see-your-data-button").isEnabled();
 
-    const goCommand = page.getByTestId(`setup.go-agent-command`);
-    await expect(goCommand).toContainText(
-      `go get github.com/newrelic/go-agent/v3`,
-    );
+  const commandTitle = page.getByTestId("setup.command-title");
 
-    await expect(
-      page.getByText(`Add this code to your main function or init block:`),
-    ).toBeVisible();
+  await expect(commandTitle).toContainText(
+    "Run this command to get the Go agent:"
+  );
 
-    await expect(page.getByTestId('setup.initialize-go-command')).toContainText(
-      `newrelic.NewApplication`,
-    );
+  const goCommand = page.getByTestId(`setup.go-agent-command`);
 
-    const monitoringTitle = page.getByTestId('setup.monitoring-title');
-    await expect(monitoringTitle).toContainText(
-      'To monitor web transactions, in your app code wrap standard HTTP requests. For example:',
-    );
+  await expect(goCommand).toContainText(
+    `go get github.com/newrelic/go-agent/v3`
+  );
 
-    const importPackageCommand = page.getByTestId(
-      'setup.import-package-command',
-    );
-    await expect(importPackageCommand).toContainText(
-      `http.HandleFunc(newrelic.WrapHandleFunc(app, "/users", usersHandler))`,
-    );
+  // replace this with test id
+  await expect(
+    page.getByText(`Add this code to your main function or init block:`)
+  ).toBeVisible();
 
-    await expect(
-      page.getByText(
-        'Copy this command into your host to enable infrastructure and logs metrics.',
-      ),
-    ).toBeVisible();
+  await expect(page.getByTestId("setup.initialize-go-command")).toContainText(
+    `newrelic.ConfigAppName("testApp")`
+  );
 
-    await expect(page.getByTestId('setup.agent-commands')).toContainText(
-      `NEW_RELIC_ACCOUNT_ID=`,
-    );
+  const monitoringTitle = page.getByTestId("setup.monitoring-title");
 
-    const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
+  await expect(monitoringTitle).toContainText(
+    "To monitor web transactions, in your app code wrap standard HTTP requests. For example:"
+  );
 
-    await tabItems.nth(1).click();
+  const importPackageCommand = page.getByTestId("setup.import-package-command");
 
-    await expect(page.getByTestId('setup.agent-commands')).toContainText(
-      `$env:NEW_RELIC_API_KEY=`,
-    );
+  await expect(importPackageCommand).toContainText(
+    `http.HandleFunc(newrelic.WrapHandleFunc(app, "/users", usersHandler))`
+  );
 
-    await tabItems.nth(2).click();
+  // Two documentation links are missing
 
-    await expect(page.getByTestId('setup.agent-commands')).toContainText(
-      `NRIA_LICENSE_KEY=`,
-    );
+  // replace this with test id
+  await expect(
+    page.getByText(
+      "Copy this command into your host to enable infrastructure and logs metrics."
+    )
+  ).toBeVisible();
 
-    const [agentInstallationDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.install-go-link').click(),
-    ]);
+  await expect(page.getByTestId("setup.agent-commands")).toContainText(
+    `curl -Ls https://download.newrelic.com/install/newrelic-cli/scripts/install.sh`
+  );
 
-    await page.waitForLoadState('networkidle');
+  const tabItems = await page.locator(`button[data-test-id="setup.tabs"]`);
 
-    await page
-      .getByRole('heading', { name: 'Install New Relic for Go' })
-      .isVisible();
+  await tabItems.nth(1).click();
 
-    await agentInstallationDoc.close();
+  await expect(page.getByTestId("setup.agent-commands")).toContainText(
+    `$env:NEW_RELIC_API_KEY=`
+  );
 
-    const [agentConfigDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.go-config-link').click(),
-    ]);
+  await tabItems.nth(2).click();
 
-    await page.waitForLoadState('networkidle');
+  await expect(page.getByTestId("setup.agent-commands")).toContainText(
+    `NRIA_LICENSE_KEY=`
+  );
 
-    await page
-      .getByRole('heading', { name: 'Go agent configuration' })
-      .isVisible();
+  const [agentInstallationDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.install-go-link").click(),
+  ]);
 
-    await agentConfigDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    const [agentNamingDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.app-naming-link').click(),
-    ]);
+  await page
+    .getByRole("heading", { name: "Install New Relic for Go" })
+    .isVisible();
 
-    await page.waitForLoadState('networkidle');
+  await agentInstallationDoc.close();
 
-    await page
-      .getByRole('heading', {
-        name: 'Name or change the name of your application',
-      })
-      .isVisible();
+  const [agentConfigDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.go-config-link").click(),
+  ]);
 
-    await agentNamingDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    const [distributedTracingLink] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.distributed-tracing-link').click(),
-    ]);
+  await page
+    .getByRole("heading", { name: "Go agent configuration" })
+    .isVisible();
 
-    await page.waitForLoadState('networkidle');
+  await agentConfigDoc.close();
 
-    await page
-      .getByRole('heading', { name: 'Introduction to distributed tracing' })
-      .isVisible();
+  const [agentNamingDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.app-naming-link").click(),
+  ]);
 
-    await distributedTracingLink.close();
+  await page.waitForLoadState("networkidle");
 
-    const [GoAgentLogsDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.application-logs-link').click(),
-    ]);
+  await page
+    .getByRole("heading", {
+      name: "Name or change the name of your application",
+    })
+    .isVisible();
 
-    await page.waitForLoadState('networkidle');
+  await agentNamingDoc.close();
 
-    await page
-      .getByRole('heading', { name: 'Go agent logs in context' })
-      .isVisible();
+  const [distributedTracingLink] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.distributed-tracing-link").click(),
+  ]);
 
-    await GoAgentLogsDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    const [compatibilityDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.compatibility-requirement-link').click(),
-    ]);
+  await page
+    .getByRole("heading", { name: "Introduction to distributed tracing" })
+    .isVisible();
 
-    await page.waitForLoadState('networkidle');
+  await distributedTracingLink.close();
 
-    await page
-      .getByRole('heading', { name: 'Go agent compatibility and requirements' })
-      .isVisible();
+  const [applicationLogsDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.application-logs-link").click(),
+  ]);
 
-    await compatibilityDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    const [agentLoggingConfigDoc] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.getByTestId('setup.configure-agent-link').click(),
-    ]);
+  await page
+    .getByRole("heading", { name: "Go agent logs in context" })
+    .isVisible();
 
-    await page.waitForLoadState('networkidle');
+  await applicationLogsDoc.close();
 
-    await page.getByRole('heading', { name: 'Go agent logging' }).isVisible();
+  const [compatibilityDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.compatibility-requirement-link").click(),
+  ]);
 
-    await agentLoggingConfigDoc.close();
+  await page.waitForLoadState("networkidle");
 
-    await page.waitForLoadState('networkidle');
+  await page
+    .getByRole("heading", { name: "Go agent compatibility and requirements" })
+    .isVisible();
 
-    await page.getByTestId('platform.user-feedback-button').click();
+  await compatibilityDoc.close();
 
-    await page
-      .getByRole('heading', { name: 'Do you have specific feedback for us?' })
-      .click();
+  const [agentLoggingConfigDoc] = await Promise.all([
+    page.waitForEvent("popup"),
+    await page.getByTestId("setup.configure-agent-link").click(),
+  ]);
 
-    await page.getByRole('button', { name: 'Close modal' }).click();
+  await page.waitForLoadState("networkidle");
 
-    await page.getByTestId('platform.stacked-view-close-button').click();
+  await page.getByRole("heading", { name: "Go agent logging" }).isVisible();
 
-    await page.getByTestId('install-newrelic.button-back-to-home').click();
+  await agentLoggingConfigDoc.close();
+
+  await page.waitForLoadState("networkidle");
+
+  await page.getByTestId("platform.user-feedback-button").click();
+
+  // replace this with test id
+  await page
+    .getByRole("heading", { name: "Do you have specific feedback for us?" })
+    .click();
+
+  // replace this with test id
+  await page.getByRole("button", { name: "Close modal" }).click();
+
+  await page.getByTestId("platform.stacked-view-close-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });

@@ -26,178 +26,149 @@ test.afterAll(async () => {
 test("should show steps to install Kubernetes", async () => {
   test.slow();
 
-  await page.getByTestId('install-newrelic.tile-kubernetes').click();
+  await page.getByTestId("install-newrelic.tile-kubernetes").click();
 
-    const selectEnvironmentHeading = await page.locator(
-      `div[data-test-id="install-newrelic.steps-item"]`,
-    );
+  const selectEnvironmentHeading = await page.locator(
+    `div[data-test-id="install-newrelic.steps-item"]`
+  );
 
-    await expect(selectEnvironmentHeading).toContainText(
-      'Select your environment (Kubernetes)',
-    );
+  await expect(selectEnvironmentHeading).toContainText(
+    "Select your environment (Kubernetes)"
+  );
 
-    await page
-      .getByTestId('install-newrelic.button-begin-installation')
-      .click();
+  await page.getByTestId("install-newrelic.button-begin-installation").click();
 
-    //The commendted code changes will be applicable for pixie auto-telemetry as well
+  await page.waitForLoadState("networkidle");
 
-    //The below code is commented as it is unable to locate the text. Hence line 53 is written as alternative
-    // const kubernetesHeading = await page.getByTestId(
-    //   'install-newrelic.kubernetes-header-text',
-    // );
+  await expect(
+    page.getByText(
+      `New Relic's Kubernetes integration gives you full observability into the health and performance of your environment, no matter whether you run Kubernetes on-premises or in the cloud.`
+    )
+  ).toBeVisible();
 
-    // await expect(kubernetesHeading).toContainText(
-    //   'Configure the Kubernetes integration',
-    // );
-    await page
-      .getByTestId('install-newrelic.kubernetes-header-text')
-      .isVisible();
+  const [footerSeeOurDocs] = await Promise.all([
+    page.waitForEvent("popup"),
+    page.getByTestId("install-newrelic.docs-link").click(),
+  ]);
 
-    await page
-      .getByTestId('install-newrelic.footer-action-continue-button')
-      .isDisabled();
+  await page.waitForLoadState("networkidle");
 
-    const clusterNameContainer = await page.locator(
-      'div[data-test-id="install-newrelic.cluster-textfield"]',
-    );
+  await page
+    .getByRole("heading", {
+      name: "Introduction to the Kubernetes integration",
+    })
+    .isVisible();
 
-    const clusterNameTextField = await clusterNameContainer.locator(
-      'input[type="text"]',
-    );
+  await footerSeeOurDocs.close();
 
-    await clusterNameTextField.fill('TestCluster');
+  await page.getByTestId("install-newrelic.feedback-link").click();
 
-    await page
-      .getByTestId('install-newrelic.footer-action-continue-button')
-      .isEnabled();
+  const feedbackTitle = await page.getByTestId("install-newrelic.modal-title");
 
-    await page
-      .getByTestId('install-newrelic.footer-action-continue-button')
-      .click();
+  await expect(feedbackTitle).toContainText("Help us improve New Relic One");
 
-    await page.waitForLoadState('networkidle');
+  //replace this with test id
+  await page.getByRole("button", { name: "Close modal" }).click();
 
-    //The below code is commented as it is unable to locate the text. Hence line 89 is written as alternative
-    // const additionalData = await page.getByTestId(
-    //   'install-newrelic.gather-additional-data',
-    // );
+  await page
+    .getByTestId("install-newrelic.footer-action-continue-button")
+    .isDisabled();
 
-    // await additionalData.toContainText(
-    //   'Select the additional data you want to gather',
-    // );
-    await page
-      .getByTestId('install-newrelic.gather-additional-data')
-      .isVisible();
+  const clusterNameContainer = await page.locator(
+    'div[data-test-id="install-newrelic.cluster-textfield"]'
+  );
 
-    /* 
-    
-    SINCE UPDATES ARE HAPPENING ON KUBERNETES, CHECKBOXES HAVE BEEN COMMENTED 
-    
-    expect(await page.locator('#checkbox-0').isChecked()).toBeTruthy();
-  
-    expect(await page.locator('#checkbox-3').isChecked()).toBeTruthy();
-  
-    expect(await page.locator('#checkbox-5').isChecked()).toBeTruthy();
-  
-    */
+  const clusterNameTextField = await clusterNameContainer.locator(
+    'input[type="text"]'
+  );
 
-    await page
-      .getByTestId('install-newrelic.additional-data-continue-button')
-      .click();
+  await clusterNameTextField.fill("TestCluster");
 
-    await page.waitForLoadState('networkidle');
+  await page
+    .getByTestId("install-newrelic.footer-action-continue-button")
+    .isEnabled();
 
-    //The below code is commented as it is unable to locate the text. Hence line 117 is written as alternative
-    // const installationMethods = await page.getByTestId(
-    //   'install-newrelic.installation-methods',
-    // );
+  await page
+    .getByTestId("install-newrelic.footer-action-continue-button")
+    .click();
 
-    // await installationMethods.toContainText('Choose install method');
-    await page.getByTestId('install-newrelic.installation-methods').isVisible();
+  await page.waitForLoadState("networkidle");
 
-    //The below code is commented as it is unable to locate the text. Hence line 125 is written as alternative
-    // const helmHeading = await page.locator(
-    //   `div[data-test-id="install-newrelic.helm-heading"]`,
-    // );
+  const additionalData = await page.getByTestId(
+    "install-newrelic.gather-additional-data"
+  );
 
-    // await helmHeading.toContainText('Guided install uses Helm by default');
-    await page.getByTestId('install-newrelic.helm-heading').isVisible();
+  await expect(additionalData).toContainText(
+    "Select the additional data you want to gather"
+  );
 
-    const codeSnippet = page.locator(
-      'data-test-id=install-newrelic.code-snippet',
-    );
+  await page
+    .getByTestId("install-newrelic.additional-data-continue-button")
+    .click();
 
-    await expect(codeSnippet).toContainText('NR_CLI_CLUSTERNAME=TestCluster');
+  await page.waitForLoadState("networkidle");
 
-    await page.getByTestId('install-newrelic.tab-helm-3').click();
+  const installationMethods = await page.getByTestId(
+    "install-newrelic.installation-methods"
+  );
 
-    await expect(codeSnippet).toContainText(
-      'helm repo add newrelic https://helm-charts.newrelic.com && helm repo update',
-    );
+  await expect(installationMethods).toContainText("Choose install method");
 
-    await page.getByTestId('install-newrelic.tab-manifest').click();
+  const defaultHelmUse = await page.locator(
+    `div[data-test-id="install-newrelic.helm-heading"]`
+  );
 
-    await expect(codeSnippet).toContainText(
-      `"pixie-chart.clusterName":"TestCluster"`,
-    );
+  await expect(defaultHelmUse).toContainText(
+    "Guided install uses Helm by default"
+  );
 
-    await page
-      .getByTestId('install-newrelic.install-methods-continue-button')
-      .click();
+  // docs are missing for helm
 
-    //The below code is commented as it is unable to locate the text. Hence line 152 is written as alternative
-    // const listenData = await page.getByTestId('install-newrelic.listen-data');
-    // await listenData.toContainText('Listening for data');
-    await page.getByTestId('install-newrelic.listen-data').isVisible();
+  // firewall doc is missing
 
-    //The below code is commented as it is unable to locate the text. Hence line 161 is written as alternative
-    // const pixieHeading = await page.getByTestId(
-    //   'install-newrelic.pixie-heading',
-    // );
-    // await pixieHeading.toContainText(
-    //   'Pixie: get ready for next-gen K8s observability!',
-    // );
-    await page.getByTestId('install-newrelic.pixie-heading').isVisible();
+  const codeSnippet = page.locator(
+    "data-test-id=install-newrelic.code-snippet"
+  );
 
-    await page.getByTestId('install-newrelic.lastpage-back-button').click();
+  await expect(codeSnippet).toContainText("NR_CLI_CLUSTERNAME=TestCluster");
 
-    await page
-      .getByTestId('install-newrelic.install-methods-back-button')
-      .click();
+  await page.getByTestId("install-newrelic.tab-helm-3").click();
 
-    await page
-      .getByTestId('install-newrelic.additional-data-back-button')
-      .click();
+  await expect(codeSnippet).toContainText(
+    "helm repo add newrelic https://helm-charts.newrelic.com && helm repo update"
+  );
 
-    const [footerSeeOurDocs] = await Promise.all([
-      page.waitForEvent('popup'),
-      page.getByTestId('install-newrelic.docs-link').click(),
-    ]);
+  await page.getByTestId("install-newrelic.tab-manifest").click();
 
-    await page.waitForLoadState('networkidle');
+  await expect(codeSnippet).toContainText(
+    `"pixie-chart.clusterName":"TestCluster"`
+  );
 
-    await page
-      .getByRole('heading', {
-        name: 'Introduction to the Kubernetes integration',
-      })
-      .isVisible();
+  await page
+    .getByTestId("install-newrelic.install-methods-continue-button")
+    .click();
 
-    await footerSeeOurDocs.close();
+  const listenData = await page.getByTestId("install-newrelic.listen-data");
 
-    await page.getByTestId('install-newrelic.feedback-link').click();
+  await expect(listenData).toContainText("Listening for data");
 
-    const feedbackTitle = await page.getByTestId(
-      'install-newrelic.modal-title',
-    );
+  const pixieHeading = await page.getByTestId("install-newrelic.pixie-heading");
 
-    await expect(feedbackTitle).toContainText('Help us improve New Relic One');
+  await expect(pixieHeading).toContainText(
+    "Pixie: get ready for next-gen K8s observability!"
+  );
 
-    await page.getByRole('button', { name: 'Close modal' }).click();
+  await page.getByTestId("install-newrelic.lastpage-back-button").click();
 
-    await page
-      .getByTestId('install-newrelic.footer-action-back-button')
-      .click();
+  await page
+    .getByTestId("install-newrelic.install-methods-back-button")
+    .click();
 
-    await page.getByTestId('install-newrelic.button-back-to-home').click();
+  await page
+    .getByTestId("install-newrelic.additional-data-back-button")
+    .click();
+
+  await page.getByTestId("install-newrelic.footer-action-back-button").click();
+
+  await page.getByTestId("install-newrelic.button-back-to-home").click();
 });
