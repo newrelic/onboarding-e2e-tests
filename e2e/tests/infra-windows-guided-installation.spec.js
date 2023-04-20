@@ -40,8 +40,6 @@ test("should guide on steps to install Windows", async () => {
 
   await page.waitForLoadState("networkidle");
 
-  // await page.getByTestId('install-newrelic.heading-text').isVisible();
-
   const header = page.locator("data-test-id=install-newrelic.heading-text");
 
   await expect(header).toContainText(
@@ -178,7 +176,6 @@ test("should guide on steps to install Windows", async () => {
 
   await expect(feedbackTitle).toContainText("Help us improve New Relic One");
 
-  //replace this with test id
   await page.getByRole("button", { name: "Close modal" }).click();
 
   await page.getByTestId("install-newrelic.footer-action-back-button").click();

@@ -50,7 +50,6 @@ test("should shows steps to install the Python", async () => {
 
   await expect(addPython).toContainText("Add your Python application data");
 
-  // replace this with test id
   const [seeAppNamingDoc] = await Promise.all([
     page.waitForEvent("popup"),
     page.getByRole("link", { name: "See our docs on naming" }).click(),
@@ -95,7 +94,6 @@ test("should shows steps to install the Python", async () => {
 
   const startApplication = `Use the following script command before your usual startup options to start your application and start sending your data to New Relic. Replace $YOUR_COMMAND_OPTIONS below with your app’s command line, eg. python app.py.`;
 
-  // replace this with test id
   await expect(page.getByText(startApplication)).toBeVisible();
 
   const applicationCommand = page.getByTestId(
@@ -106,7 +104,6 @@ test("should shows steps to install the Python", async () => {
     `NEW_RELIC_CONFIG_FILE=newrelic.ini newrelic-admin run-program $YOUR_COMMAND_OPTIONS`
   );
 
-  // replace this with test id
   await expect(
     page.getByText(
       "Copy this command into your host to enable infrastructure and logs metrics."
@@ -208,12 +205,10 @@ test("should shows steps to install the Python", async () => {
 
   await page.getByTestId("platform.user-feedback-button").click();
 
-  // replace this with test id
   await page
     .getByRole("heading", { name: "Do you have specific feedback for us?" })
     .click();
 
-  // replace this with test id
   await page.getByRole("button", { name: "Close modal" }).click();
 
   await page.getByTestId("platform.stacked-view-close-button").click();

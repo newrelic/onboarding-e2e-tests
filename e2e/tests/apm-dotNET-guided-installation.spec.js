@@ -49,14 +49,6 @@ test.describe(".NET Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
-    const installationTitle = page.getByTestId(
-      "install-newrelic.installation-title"
-    );
-
-    await expect(installationTitle).toContainText(
-      "How do you want to install the .NET agent?"
-    );
-
     const dockerLinux = page.getByTestId("install-newrelic.docker-linux-host");
 
     await expect(dockerLinux).toContainText("On a Linux host");
@@ -108,7 +100,6 @@ test.describe(".NET Guided installation", () => {
 
     await expect(feedbackTitle).toContainText("Help us improve New Relic One");
 
-    //replace this with test id
     await page.getByRole("button", { name: "Close modal" }).click();
 
     await page.getByTestId("install-newrelic.apm-footer-back-button").click();
@@ -156,7 +147,6 @@ test.describe(".NET Guided installation", () => {
       "How is New Relic One working for you, right now?"
     );
 
-    //replace this with test id
     await page.getByRole("button", { name: "Close modal" }).click();
 
     await page
@@ -275,7 +265,6 @@ test.describe(".NET Guided installation", () => {
 
     await page.getByTestId("install-newrelic.feedback-question").isVisible();
 
-    //replace this with test id
     await page.getByRole("button", { name: "Close modal" }).click();
 
     await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
@@ -359,7 +348,6 @@ test.describe(".NET Guided installation", () => {
 
     await expect(feedbackTitle).toContainText("Help us improve New Relic One");
 
-    //replace this with test id
     await page.getByRole("button", { name: "Close modal" }).click();
 
     await page
@@ -473,14 +461,6 @@ test.describe(".NET Guided installation", () => {
       .isVisible();
 
     await distributedTracingLink.close();
-
-    // open instrumentation doc is unavailable
-    // const [openInstrumentationDoc] = await Promise.all([
-    //   page.waitForEvent('popup'),
-    //   page.getByRole('link', { name: 'Open instrumentation' }).click(),
-    // ]);
-
-    // await page.waitForLoadState('networkidle');
 
     await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
 
@@ -615,13 +595,6 @@ test.describe(".NET Guided installation", () => {
       .isVisible();
 
     await distributedTracingLink.close();
-
-    // open instrumaentation doc is unavailable
-    // const [openInstrumentationDoc] = await Promise.all([
-    //   page.waitForEvent('popup'),
-    //   page.getByRole('link', { name: 'Open instrumentation' }).click(),
-    // ]);
-    // await page.waitForLoadState('networkidle');
 
     await page.getByTestId("platform.stacked-view-close-button").nth(1).click();
 

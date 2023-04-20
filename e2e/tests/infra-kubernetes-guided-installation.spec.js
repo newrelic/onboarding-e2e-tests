@@ -67,7 +67,6 @@ test("should show steps to install Kubernetes", async () => {
 
   await expect(feedbackTitle).toContainText("Help us improve New Relic One");
 
-  //replace this with test id
   await page.getByRole("button", { name: "Close modal" }).click();
 
   await page
@@ -121,10 +120,6 @@ test("should show steps to install Kubernetes", async () => {
   await expect(defaultHelmUse).toContainText(
     "Guided install uses Helm by default"
   );
-
-  // docs are missing for helm
-
-  // firewall doc is missing
 
   const codeSnippet = page.locator(
     "data-test-id=install-newrelic.code-snippet"

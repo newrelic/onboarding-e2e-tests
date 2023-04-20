@@ -50,7 +50,6 @@ test("should shows steps to install the Ruby", async () => {
 
   await expect(addRuby).toContainText("Add your Ruby application data");
 
-  // replace this with test id
   const [seeAppNamingDoc] = await Promise.all([
     page.waitForEvent("popup"),
     page.getByRole("link", { name: "See our docs on naming" }).click(),
@@ -218,12 +217,10 @@ test("should shows steps to install the Ruby", async () => {
 
   await page.getByTestId("platform.user-feedback-button").click();
 
-  // replace this with test id
   await page
     .getByRole("heading", { name: "Do you have specific feedback for us?" })
     .click();
 
-  // replace this with test id
   await page.getByRole("button", { name: "Close modal" }).click();
 
   await page.getByTestId("platform.stacked-view-close-button").click();

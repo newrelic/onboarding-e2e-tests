@@ -56,7 +56,6 @@ test("should shows steps to install the Go agent", async () => {
 
   await expect(appName).toContainText("Give your application a name");
 
-  // replace this with test id
   const [seeAppNamingDoc] = await Promise.all([
     page.waitForEvent("popup"),
     page.getByRole("link", { name: "See our docs on naming" }).click(),
@@ -93,7 +92,6 @@ test("should shows steps to install the Go agent", async () => {
     `go get github.com/newrelic/go-agent/v3`
   );
 
-  // replace this with test id
   await expect(
     page.getByText(`Add this code to your main function or init block:`)
   ).toBeVisible();
@@ -114,9 +112,6 @@ test("should shows steps to install the Go agent", async () => {
     `http.HandleFunc(newrelic.WrapHandleFunc(app, "/users", usersHandler))`
   );
 
-  // Two documentation links are missing
-
-  // replace this with test id
   await expect(
     page.getByText(
       "Copy this command into your host to enable infrastructure and logs metrics."
@@ -236,12 +231,10 @@ test("should shows steps to install the Go agent", async () => {
 
   await page.getByTestId("platform.user-feedback-button").click();
 
-  // replace this with test id
   await page
     .getByRole("heading", { name: "Do you have specific feedback for us?" })
     .click();
 
-  // replace this with test id
   await page.getByRole("button", { name: "Close modal" }).click();
 
   await page.getByTestId("platform.stacked-view-close-button").click();
