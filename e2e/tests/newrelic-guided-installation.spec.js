@@ -25,9 +25,7 @@ test.afterAll(async () => {
 
 test.describe("New Relic Guided installation agents", () => {
   test("should validate default Auto-discovery guided installations", async () => {
-    await page
-      .getByRole("heading", { name: "Select your environment" })
-      .isVisible();
+    await expect(page.getByText("Select your environment")).toBeVisible();
     await page.getByTestId("install-newrelic.tile-linux").isVisible();
     await page.getByTestId("install-newrelic.tile-windows").isVisible();
     await page.getByTestId("install-newrelic.tile-docker").isVisible();
@@ -36,11 +34,8 @@ test.describe("New Relic Guided installation agents", () => {
   });
 
   test("should validate default APM guided installations", async () => {
-   
-    await page.getByText("APM (Application Monitoring)").click();
-    await page
-      .getByRole("heading", { name: "Select your language" })
-      .isVisible();
+    await page.getByTestId("install-newrelic.apm-tab").click();
+    await expect(page.getByText("Select your language")).toBeVisible();
     await page.getByTestId("install-newrelic.tile-java").isVisible();
     await page.getByTestId("install-newrelic.tile-dotnet").isVisible();
     await page.getByTestId("install-newrelic.tile-php").isVisible();
@@ -48,7 +43,6 @@ test.describe("New Relic Guided installation agents", () => {
     await page.getByTestId("install-newrelic.tile-ruby").isVisible();
     await page.getByTestId("install-newrelic.tile-python").isVisible();
     await page.getByTestId("install-newrelic.tile-go").isVisible();
-    //await page.getByRole('heading', { name: 'Auto-telemetry' }).isVisible();
     await page.getByTestId("install-newrelic.tile-kubernetes").isVisible();
   });
 });
