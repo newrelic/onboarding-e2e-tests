@@ -51,7 +51,7 @@ test.describe(".NET Guided installation", () => {
 
     const dockerLinux = page.getByTestId("install-newrelic.docker-linux-host");
 
-    await expect(dockerLinux).toContainText("On a Linux host");
+    await expect(dockerLinux).toContainText("On a Linux host", { exact: true });
 
     const dockerIIS = page.getByTestId("install-newrelic.docker-with-iis");
 
