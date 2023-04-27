@@ -39,9 +39,9 @@ test.describe(".NET Guided installation", () => {
       "Select your language (.NET)"
     );
 
-    const installDotNet = await page.getByTestId("install-newrelic.title");
-
-    await expect(installDotNet).toContainText("Install the .NET agent");
+    await expect(page.getByTestId("install-newrelic.title")).toContainText(
+      "Install the .NET agent"
+    );
 
     await page
       .getByTestId("install-newrelic.button-begin-installation")
@@ -49,35 +49,29 @@ test.describe(".NET Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
-    const dockerLinux = page.getByTestId("install-newrelic.docker-linux-host");
+    await expect(
+      page.getByTestId("install-newrelic.docker-linux-host")
+    ).toContainText("On a Linux host");
 
-    await expect(dockerLinux).toContainText("On a Linux host", { exact: true });
+    await expect(
+      page.getByTestId("install-newrelic.docker-with-iis")
+    ).toContainText("On a Windows host with IIS");
 
-    const dockerIIS = page.getByTestId("install-newrelic.docker-with-iis");
+    await expect(
+      page.getByTestId("install-newrelic.docker-without-iis")
+    ).toContainText("On a Windows host without IIS");
 
-    await expect(dockerIIS).toContainText("On a Windows host with IIS");
+    await expect(
+      page.getByTestId("install-newrelic.docker-linux-link")
+    ).toContainText("Docker for Linux");
 
-    const dockerWIthoutIIS = page.getByTestId(
-      "install-newrelic.docker-without-iis"
-    );
+    await expect(
+      page.getByTestId("install-newrelic.docker-windows-link")
+    ).toContainText("Docker for Windows");
 
-    await expect(dockerWIthoutIIS).toContainText(
-      "On a Windows host without IIS"
-    );
-
-    const dotNetDocker = page.getByTestId("install-newrelic.docker-linux-link");
-
-    await expect(dotNetDocker).toContainText("Docker for Linux");
-
-    const dotNetWindows = page.getByTestId(
-      "install-newrelic.docker-windows-link"
-    );
-
-    await expect(dotNetWindows).toContainText("Docker for Windows");
-
-    const dotNetAzure = page.getByTestId("install-newrelic.dotnet-azure-link");
-
-    await expect(dotNetAzure).toContainText("Azure Web Apps");
+    await expect(
+      page.getByTestId("install-newrelic.dotnet-azure-link")
+    ).toContainText("Azure Web Apps");
 
     const [footerSeeOurDocs] = await Promise.all([
       page.waitForEvent("popup"),

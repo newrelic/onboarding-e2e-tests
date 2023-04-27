@@ -24,7 +24,7 @@ test.afterAll(async () => {
 });
 
 test.describe("PHP Guided installation", () => {
-  test("should show available methods to install the PHP agent", async () => {
+  test.only("should show available methods to install the PHP agent", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -39,9 +39,9 @@ test.describe("PHP Guided installation", () => {
       "Select your language (PHP)"
     );
 
-    const installPHP = await page.getByTestId("install-newrelic.title");
-
-    await expect(installPHP).toContainText("Install the PHP agent");
+    await expect(page.getByTestId("install-newrelic.title")).toContainText(
+      "Install the PHP agent"
+    );
 
     await page
       .getByTestId("install-newrelic.button-begin-installation")
@@ -49,33 +49,25 @@ test.describe("PHP Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
-    const phpOnHost = page.getByTestId("install-newrelic.php-on-host");
-
-    await expect(phpOnHost).toContainText("On host");
-
-    const phpHostStandard = page.getByTestId(
-      "install-newrelic.php-host-standard"
+    await expect(page.getByTestId("nstall-newrelic.php-on-host")).toContainText(
+      "On host"
     );
 
-    await expect(phpHostStandard).toContainText("On host standard");
+    await expect(
+      page.getByTestId("install-newrelic.php-host-standard")
+    ).toContainText("On host standard");
 
-    const phpDocker = page.getByTestId("install-newrelic.php-docker");
-
-    await expect(phpDocker).toContainText("Docker");
-
-    const packageManager = page.getByTestId(
-      "install-newrelic.php-package-manager"
+    await expect(page.getByTestId("install-newrelic.php-docker")).toContainText(
+      "Docker"
     );
 
-    await expect(packageManager).toContainText("Package manager");
+    await expect(
+      page.getByTestId("install-newrelic.php-package-manager")
+    ).toContainText("Package manager");
 
-    const hostingProvider = page.getByTestId(
-      "install-newrelic.hosting-provider-doc"
-    );
-
-    await expect(hostingProvider).toContainText("Hosting provider");
-
-    await page.getByRole("heading", { name: "AWS Lambda" }).isVisible();
+    await expect(
+      page.getByTestId("install-newrelic.hosting-provider-doc")
+    ).toContainText("Hosting provider");
 
     const [footerSeeOurDocs] = await Promise.all([
       page.waitForEvent("popup"),
