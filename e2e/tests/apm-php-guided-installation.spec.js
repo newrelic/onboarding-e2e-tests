@@ -49,7 +49,7 @@ test.describe("PHP Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
-    await expect(page.getByTestId("nstall-newrelic.php-on-host")).toContainText(
+    await expect(page.getByTestId("install-newrelic.php-on-host")).toContainText(
       "On host"
     );
 
