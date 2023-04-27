@@ -40,11 +40,9 @@ test("should guide on steps to install Windows", async () => {
 
   await page.waitForLoadState("networkidle");
 
-  const header = page.locator("data-test-id=install-newrelic.heading-text");
-
-  await expect(header).toContainText(
-    "Copy and run this command in PowerShell and run as administrator"
-  );
+  await expect(
+    page.getByTestId("data-test-id=install-newrelic.heading-text")
+   ).toContainText("Copy and run this command in PowerShell and run as administrator");
 
   await page.getByTestId("install-newrelic.customization-button").click();
 
