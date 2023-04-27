@@ -24,7 +24,7 @@ test.afterAll(async () => {
 });
 
 test.describe("PHP Guided installation", () => {
-  test.only("should show available methods to install the PHP agent", async () => {
+  test("should show available methods to install the PHP agent", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
