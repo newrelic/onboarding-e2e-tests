@@ -110,7 +110,7 @@ test.describe(".NET Guided installation", () => {
       .getByTestId("install-newrelic.button-begin-installation")
       .click();
 
-    const dockerLinux = page.getByTestId("install-newrelic.docker-linux-host");
+    const dockerLinux = page.getByTestId("install-newrelic.dotnet-linux-host");
 
     await dockerLinux.click();
 
@@ -281,7 +281,7 @@ test.describe(".NET Guided installation", () => {
       .getByTestId("install-newrelic.button-begin-installation")
       .click();
 
-    const dockerIIS = page.getByTestId("install-newrelic.docker-with-iis");
+    const dockerIIS = page.getByTestId("install-newrelic.dotnet-with-iis");
 
     await dockerIIS.click();
 
@@ -477,7 +477,7 @@ test.describe(".NET Guided installation", () => {
       .click();
 
     const dockerWIthoutIIS = page.getByTestId(
-      "install-newrelic.docker-without-iis"
+      "install-newrelic.dotnet-without-iis"
     );
 
     await dockerWIthoutIIS.click();
@@ -610,7 +610,7 @@ test.describe(".NET Guided installation", () => {
 
     const [dotnetDockerLinux] = await Promise.all([
       page.waitForEvent("popup"),
-      await page.getByTestId("install-newrelic.docker-linux-link").click(),
+      await page.getByTestId("install-newrelic.dotnet-docker-linux-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -641,7 +641,7 @@ test.describe(".NET Guided installation", () => {
 
     const [dotnetDockerWindows] = await Promise.all([
       page.waitForEvent("popup"),
-      await page.getByTestId("install-newrelic.docker-windows-link").click(),
+      await page.getByTestId("install-newrelic.dotnet-docker-windows-link").click(),
     ]);
 
     await page.waitForLoadState("networkidle");
