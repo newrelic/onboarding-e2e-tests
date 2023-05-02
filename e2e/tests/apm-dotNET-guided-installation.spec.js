@@ -50,23 +50,23 @@ test.describe(".NET Guided installation", () => {
     await page.waitForLoadState("networkidle");
 
     await expect(
-      page.getByTestId("install-newrelic.docker-linux-host")
+      page.getByTestId("install-newrelic.dotnet-linux-host")
     ).toContainText("On a Linux host");
 
     await expect(
-      page.getByTestId("install-newrelic.docker-with-iis")
+      page.getByTestId("install-newrelic.dotnet-with-iis")
     ).toContainText("On a Windows host with IIS");
 
     await expect(
-      page.getByTestId("install-newrelic.docker-without-iis")
+      page.getByTestId("install-newrelic.dotnet-without-iis")
     ).toContainText("On a Windows host without IIS");
 
     await expect(
-      page.getByTestId("install-newrelic.docker-linux-link")
+      page.getByTestId("install-newrelic.dotnet-docker-linux-link")
     ).toContainText("Docker for Linux");
 
     await expect(
-      page.getByTestId("install-newrelic.docker-windows-link")
+      page.getByTestId("install-newrelic.dotnet-docker-windows-link")
     ).toContainText("Docker for Windows");
 
     await expect(
