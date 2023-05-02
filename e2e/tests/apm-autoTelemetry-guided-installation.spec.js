@@ -47,12 +47,10 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
   await page.getByTestId("install-newrelic.button-begin-installation").click();
 
   await page.waitForLoadState("networkidle");
-
+  
   await expect(
-    page.getByText(
-      `Get instant service-level insights, full-body requests, and application profiles through eBPF.`
-    )
-  ).toBeVisible();
+    page.getByTestId("install-newrelic.pixie-description")
+  ).toContainText(`Get instant service-level insights, full-body requests, and application profiles through eBPF.`);
 
   const [footerSeeOurDocs] = await Promise.all([
     page.waitForEvent("popup"),
