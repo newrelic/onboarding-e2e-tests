@@ -49,6 +49,9 @@ test.describe(".NET Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
+    // Set the timeout to 10 seconds
+    await page.setDefaultNavigationTimeout(10000);
+
     await expect(
       page.getByTestId("install-newrelic.dotnet-linux-host")
     ).toContainText("On a Linux host");
@@ -610,7 +613,9 @@ test.describe(".NET Guided installation", () => {
 
     const [dotnetDockerLinux] = await Promise.all([
       page.waitForEvent("popup"),
-      await page.getByTestId("install-newrelic.dotnet-docker-linux-link").click(),
+      await page
+        .getByTestId("install-newrelic.dotnet-docker-linux-link")
+        .click(),
     ]);
 
     await page.waitForLoadState("networkidle");
@@ -641,7 +646,9 @@ test.describe(".NET Guided installation", () => {
 
     const [dotnetDockerWindows] = await Promise.all([
       page.waitForEvent("popup"),
-      await page.getByTestId("install-newrelic.dotnet-docker-windows-link").click(),
+      await page
+        .getByTestId("install-newrelic.dotnet-docker-windows-link")
+        .click(),
     ]);
 
     await page.waitForLoadState("networkidle");

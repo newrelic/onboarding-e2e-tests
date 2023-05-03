@@ -47,10 +47,15 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
   await page.getByTestId("install-newrelic.button-begin-installation").click();
 
   await page.waitForLoadState("networkidle");
-  
+
+  // Set the timeout to 10 seconds
+  await page.setDefaultNavigationTimeout(10000);
+
   await expect(
     page.getByTestId("install-newrelic.pixie-description")
-  ).toContainText(`Get instant service-level insights, full-body requests, and application profiles through eBPF.`);
+  ).toContainText(
+    `Get instant service-level insights, full-body requests, and application profiles through eBPF.`
+  );
 
   const [footerSeeOurDocs] = await Promise.all([
     page.waitForEvent("popup"),
@@ -76,8 +81,8 @@ test("should show steps to install auto-telemetry for Kubernetes with pixie", as
   await page.getByRole("button", { name: "Close modal" }).click();
 
   await page
-  .getByTestId("install-newrelic.footer-action-continue-button")
-  .isDisabled();
+    .getByTestId("install-newrelic.footer-action-continue-button")
+    .isDisabled();
 
   const clusterNameContainer = await page.locator(
     'div[data-test-id="install-newrelic.cluster-textfield"]'
