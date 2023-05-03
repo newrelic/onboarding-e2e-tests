@@ -7,8 +7,8 @@ on:
     branches: [main, master]
   schedule:
     # * is a special character in YAML so you have to quote this string
-    # This example triggers the workflow every 4 hours
-    - cron: '0 */4 * * *'
+    # This example triggers the workflow every 15 mins
+    - cron: '*/15 * * * *'
 
     
 permissions:

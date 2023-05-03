@@ -111,3 +111,12 @@ If you want run a specific test file, you can add path to the file at the end of
 ```sh
 npx playwright test --headed ./tests/mytest.spec.js
 ```
+
+
+## Slack-Github workflow subscription
+
+If you wish to notify github workflow actions status, use this command in your slack channel
+
+```sh
+/github subscribe https://github.com/newrelic/onboarding-e2e-tests workflows:{name:"Guided Installation e2e tests"}
+```
