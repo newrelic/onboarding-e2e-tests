@@ -47,14 +47,14 @@ test.describe(".NET Guided installation", () => {
       .getByTestId("install-newrelic.button-begin-installation")
       .click();
 
-    await page.waitForLoadState("networkidle");
-
-    // Set the timeout to 10 seconds
-    await page.setDefaultNavigationTimeout(10000);
+    await page.waitForSelector(
+      '[data-test-id="install-newrelic.installation-title"]',
+      { visible: true }
+    );
 
     await expect(
       page.getByTestId("install-newrelic.dotnet-linux-host")
-    ).toContainText("On a Linux host");
+    ).toContainText("On a Linux host", { timeout: 15000 });
 
     await expect(
       page.getByTestId("install-newrelic.dotnet-with-iis")
