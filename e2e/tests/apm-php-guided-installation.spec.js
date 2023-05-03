@@ -49,9 +49,12 @@ test.describe("PHP Guided installation", () => {
 
     await page.waitForLoadState("networkidle");
 
-    await expect(page.getByTestId("install-newrelic.php-on-host")).toContainText(
-      "On host"
-    );
+    // Set the timeout to 10 seconds
+    await page.setDefaultNavigationTimeout(10000);
+
+    await expect(
+      page.getByTestId("install-newrelic.php-on-host")
+    ).toContainText("On host");
 
     await expect(
       page.getByTestId("install-newrelic.php-host-standard")
