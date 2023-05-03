@@ -47,41 +47,58 @@ test.describe("PHP Guided installation", () => {
       .getByTestId("install-newrelic.button-begin-installation")
       .click();
 
-    await page.waitForLoadState("networkidle");
+    // await page.waitForLoadState("networkidle");
 
     // Set the timeout to 10 seconds
-    await page.setDefaultNavigationTimeout(10000);
+    // await page.setDefaultNavigationTimeout(10000);
 
-    await expect(
-      page.getByTestId("install-newrelic.php-on-host")
-    ).toContainText("On host");
+    // await expect(
+    //   page.getByTestId("install-newrelic.php-on-host")
+    // ).toContainText("On host");
 
-    await expect(
-      page.getByTestId("install-newrelic.php-host-standard")
-    ).toContainText("On host standard");
+    // await expect(
+    //   page.getByTestId("install-newrelic.php-host-standard")
+    // ).toContainText("On host standard");
 
-    await expect(page.getByTestId("install-newrelic.php-docker")).toContainText(
-      "Docker"
-    );
+    // await expect(page.getByTestId("install-newrelic.php-docker")).toContainText(
+    //   "Docker"
+    // );
 
-    await expect(
-      page.getByTestId("install-newrelic.php-package-manager")
-    ).toContainText("Package manager");
+    // await expect(
+    //   page.getByTestId("install-newrelic.php-package-manager")
+    // ).toContainText("Package manager");
 
-    await expect(
-      page.getByTestId("install-newrelic.hosting-provider-doc")
-    ).toContainText("Hosting provider");
+    // await expect(
+    //   page.getByTestId("install-newrelic.hosting-provider-doc")
+    // ).toContainText("Hosting provider");
+
+    try {
+      await page.waitForSelector('[data-test-id="install-newrelic.php-on-host"]');
+      await expect(page).toMatchElement('[data-test-id="install-newrelic.php-on-host"]', { text: "On host" });
+      await expect(page).toMatchElement('[data-test-id="install-newrelic.php-host-standard"]', { text: "On host standard" });
+      await expect(page).toMatchElement('[data-test-id="install-newrelic.php-docker"]', { text: "Docker" });
+      await expect(page).toMatchElement('[data-test-id="install-newrelic.php-package-manager"]', { text: "Package manager" });
+      await expect(page).toMatchElement('[data-test-id="install-newrelic.hosting-provider-doc"]', { text: "Hosting provider" });
+    } catch (error) {
+      throw new Error(`Failed to show available installation methods: ${error}`);
+    }
 
     const [footerSeeOurDocs] = await Promise.all([
       page.waitForEvent("popup"),
       page.getByTestId("install-newrelic.docs-link").click(),
     ]);
 
-    await page.waitForLoadState("networkidle");
+    // await page.waitForLoadState("networkidle");
 
-    await page
-      .getByRole("heading", { name: "Guided install overview" })
-      .isVisible();
+    // await page
+    //   .getByRole("heading", { name: "Guided install overview" })
+    //   .isVisible();
+
+    try {
+      await page.waitForSelector('h1', { text: 'Guided install overview' });
+    } catch (error) {
+      throw new Error(`Failed to show guided install overview: ${error}`);
+    }
 
     await footerSeeOurDocs.close();
 
