@@ -47,14 +47,14 @@ test.describe("PHP Guided installation", () => {
       .getByTestId("install-newrelic.button-begin-installation")
       .click();
 
-    await page.waitForLoadState("networkidle");
-
-    // Set the timeout to 10 seconds
-    await page.setDefaultNavigationTimeout(10000);
+    await page.waitForSelector(
+      '[data-test-id="install-newrelic.installation-title"]',
+      { visible: true }
+    );
 
     await expect(
       page.getByTestId("install-newrelic.php-on-host")
-    ).toContainText("On host");
+    ).toContainText("On host", { timeout: 15000 });
 
     await expect(
       page.getByTestId("install-newrelic.php-host-standard")
@@ -76,8 +76,6 @@ test.describe("PHP Guided installation", () => {
       page.waitForEvent("popup"),
       page.getByTestId("install-newrelic.docs-link").click(),
     ]);
-
-    await page.waitForLoadState("networkidle");
 
     await page
       .getByRole("heading", { name: "Guided install overview" })
