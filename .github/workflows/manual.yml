@@ -7,14 +7,8 @@ on:
     branches: [main, master]
   schedule:
     # * is a special character in YAML so you have to quote this string
-    # This example triggers the workflow every 15 mins
-    - cron: '*/15 * * * *'
-
-    
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+    # This example triggers the workflow every 2 hours
+    - cron: '0 */2 * * *'
   
 jobs:
   e2e-tests:
@@ -47,18 +41,5 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-        
-      - name: upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: playwright-report/
-          
-      - name: Deploy to gitGithub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
-        with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+
         
