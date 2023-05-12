@@ -8,7 +8,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # This example triggers the workflow every 15 minutes
-    - cron: '*/15 * * * *'
+    - cron: '*/30 * * * *'
   
 jobs:
   e2e-tests:
