@@ -287,7 +287,7 @@ test.describe("Node JS Guided installation", () => {
     await page.getByTestId("platform.stacked-view-close-button").click();
   });
 
-  test.skip("should shows steps to install the Node JS On a host (PM2)", async () => {
+  test("should shows steps to install the Node JS On a host (PM2)", async () => {
     test.slow();
 
     await page.getByText("APM (Application Monitoring)").click();
