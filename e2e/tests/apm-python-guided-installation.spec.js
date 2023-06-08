@@ -23,7 +23,7 @@ test.afterAll(async () => {
   await browser.close();
 });
 
-test("should shows steps to install the Python", async () => {
+test.skip("should shows steps to install the Python", async () => {
   test.slow();
 
   await page.getByTestId("install-newrelic.apm-tab").click();

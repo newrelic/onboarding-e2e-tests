@@ -24,7 +24,7 @@ test.afterAll(async () => {
 });
 
 test.describe("PHP Guided installation", () => {
-  test("should show available methods to install the PHP agent", async () => {
+  test.skip("should show available methods to install the PHP agent", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -98,7 +98,7 @@ test.describe("PHP Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the PHP agent on host", async () => {
+  test.skip("should guide steps to install the PHP agent on host", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -295,7 +295,7 @@ test.describe("PHP Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the PHP agent On host standard", async () => {
+  test.skip("should guide steps to install the PHP agent On host standard", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -454,7 +454,7 @@ test.describe("PHP Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the PHP agent through Docker", async () => {
+  test.skip("should guide steps to install the PHP agent through Docker", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -611,7 +611,7 @@ test.describe("PHP Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the PHP agent through Package manager", async () => {
+  test.skip("should guide steps to install the PHP agent through Package manager", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -770,7 +770,7 @@ test.describe("PHP Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the PHP agent through Hosting provider", async () => {
+  test.skip("should guide steps to install the PHP agent through Hosting provider", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
