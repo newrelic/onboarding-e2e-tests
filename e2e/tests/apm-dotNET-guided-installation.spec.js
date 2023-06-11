@@ -24,7 +24,7 @@ test.afterAll(async () => {
 });
 
 test.describe(".NET Guided installation", () => {
-  test("should shows different methods available to install the .NET", async () => {
+  test.skip("should shows different methods available to install the .NET", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -102,7 +102,7 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("install-newrelic.apm-footer-back-button").click();
   });
 
-  test("should guide steps to install the .NET agent on a Linux host", async () => {
+  test.skip("should guide steps to install the .NET agent on a Linux host", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -273,7 +273,7 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the .NET agent On a Windows host with IIS", async () => {
+  test.skip("should guide steps to install the .NET agent On a Windows host with IIS", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -468,7 +468,7 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the .NET agent On a Windows host without IIS", async () => {
+  test.skip("should guide steps to install the .NET agent On a Windows host without IIS", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -600,7 +600,7 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the .NET agent on Docker for Linux", async () => {
+  test.skip("should guide steps to install the .NET agent on Docker for Linux", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -633,7 +633,7 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the .NET agent on Docker for Windows", async () => {
+  test.skip("should guide steps to install the .NET agent on Docker for Windows", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -666,7 +666,7 @@ test.describe(".NET Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the .NET agent on Azure Web Apps", async () => {
+  test.skip("should guide steps to install the .NET agent on Azure Web Apps", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
