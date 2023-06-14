@@ -1,0 +1,42 @@
+{
+    "services": [
+      {
+        "id": "pythontron1",
+        "source_repository": "https://github.com/newrelic/demo-pythontron.git",
+        "deploy_script_path": "deploy/linux/roles",
+        "port": 5001,
+        "destinations": ["host"],
+        "params": {
+          "delay_start_ms": 5000
+        }
+      }
+    ],
+    "resources": [
+      {
+        "id": "host",
+        "provider": "aws",
+        "type": "ec2",
+        "size": "t2.micro"
+      }
+    ],
+    "instrumentations": {
+      "services": [
+        {
+          "id": "exec1",
+          "service_ids": [
+            "pythontron1"
+          ],
+          "source_repository": "https://github.com/newrelic/open-install-library.git",
+          "deploy_script_path": "test/deploy/linux/shell/roles",
+          "params": {
+          }
+        }
+      ]
+    },
+    "global_tags": {
+      "owning_team": "virtuoso",
+      "Environment": "development",
+      "Department": "Product",
+      "Product": "virtuoso"
+    }
+  }
