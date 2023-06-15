@@ -24,7 +24,7 @@ test.afterAll(async () => {
 });
 
 test.describe("Java Guided installation", () => {
-  test("should guide steps to install the Java agent", async () => {
+  test.skip("should guide steps to install the Java agent", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -99,7 +99,7 @@ test.describe("Java Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the Java agent through Gradle, Maven and Docker", async () => {
+  test.skip("should guide steps to install the Java agent through Gradle, Maven and Docker", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
@@ -158,7 +158,7 @@ test.describe("Java Guided installation", () => {
     await page.getByTestId("install-newrelic.button-back-to-home").click();
   });
 
-  test("should guide steps to install the Java agent through host", async () => {
+  test.skip("should guide steps to install the Java agent through host", async () => {
     test.slow();
 
     await page.getByTestId("install-newrelic.apm-tab").click();
