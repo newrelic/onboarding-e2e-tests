@@ -23,6 +23,8 @@ test.afterAll(async () => {
   await browser.close();
 });
 
+// abasha1234 on Jun 19, 2023 at 12:53 PM
+// skip this test completely
 test.describe("Node JS Guided installation", () => {
   test.skip("should shows different methods to install the Node JS", async () => {
     test.slow();
