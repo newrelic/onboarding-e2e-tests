@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import deployConfig from './apm-nodeJS-host-deploy.json';
+import deployConfig from './apm-python-host-deploy.json';
 const { 
   v4: uuidv4,
 } = require('uuid');
@@ -37,7 +37,7 @@ test.describe("Python host installation", () => {
 
     await page.getByText("Add data").first().click();
 
-    await page.locator('card-body-wrapper-Application monitoring').getByRole('button', { name: 'Python' }).click();
+    const divId = await page.locator('div[id^="card-body-wrapper-Application monitoring"]').getByRole('button', { name: 'Python' }).click();
 
     const container = await page.locator(
       'div[id="shared-component-installator.python-installation"]'

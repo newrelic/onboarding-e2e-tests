@@ -1,7 +1,7 @@
 {
     "services": [
       {
-        "id": "pythontron1",
+        "id": "pythontron",
         "source_repository": "https://github.com/newrelic/demo-pythontron.git",
         "deploy_script_path": "deploy/linux/roles",
         "port": 5001,
@@ -16,7 +16,7 @@
         "id": "host",
         "provider": "aws",
         "type": "ec2",
-        "size": "t2.micro"
+        "size": "t3.xlarge"
       }
     ],
     "instrumentations": {
@@ -24,7 +24,7 @@
         {
           "id": "exec1",
           "service_ids": [
-            "pythontron1"
+            "pythontron"
           ],
           "source_repository": "https://github.com/newrelic/open-install-library.git",
           "deploy_script_path": "test/deploy/linux/shell/roles",
