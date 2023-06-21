@@ -39,7 +39,7 @@ test.describe("Node JS host installation", () => {
 
     await page.locator('#card-body-wrapper-Logging').getByRole('button', { name: 'Node.js' }).click();
 
-    await page.getByText("On a host (without PM2)").click();
+    await page.getByText("On a host").first().click();
 
     // Fill app name
     // const applicationNameContainer = await page.locator('#text-field-2');
