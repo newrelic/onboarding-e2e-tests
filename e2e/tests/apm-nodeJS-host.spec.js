@@ -76,6 +76,30 @@ test.describe("Node JS host installation", () => {
     deployConfig.instrumentations.services[0].params.step_configure = command[0]
     deployConfig.instrumentations.services[0].params.step_onafterstart = `${stopNodetron};${envVars} ${command[1].replace("YOUR_MAIN_FILENAME.js","server.js")} config/app_config.json 2>&1 &`
 
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(
+      page.getByText("Connect your Logs and Infrastructure")
+    ).toBeVisible();
+    
+    await page.getByRole('radio', { name: 'I want to install the agent directly on my host' }).click();
+
+    await page.getByRole('radio', { name: 'Linux' }).click();
+
+    await page.getByLabel('Automatically answer "yes" to all install prompts. We\'ll stop the installer if there\'s an error.').check();
+
+    const infraStepCopy = await page.locator("div.TerminalNode-terminal")
+    var command = []
+    for (const item of await infraStepCopy.all()) {
+      const val = (await item.innerText())
+      command.push(`${val}`)
+      if (command.length == 2) {
+        break
+      }
+    }
+    
+    await page.getByRole("button", { name: "Continue" }).click();
+
     // console.log(deployConfig)
 
     // Create an SQS service object
@@ -100,6 +124,26 @@ test.describe("Node JS host installation", () => {
       console.log("Success", data.MessageId);
     }
   });
+
+    await page.getByRole('button', { name: 'Test connection' }).click();
+
+    await expect(
+      page.locator('div').filter({hasText: /^Node\.js agent$/}).first()
+    ).toBeVisible();
+
+    await expect(
+      page.locator('div').filter({hasText: /^On-host logs$/}).first()
+    ).toBeVisible();
+
+    await expect(
+      page.locator('div').filter({hasText: /^Infrastructure agent$/}).first()
+    ).toBeVisible();
+
+    await expect(
+      await page.getByText("Successfully installed. Review agent logs")
+    ).toBeVisible();
+
+    await page.getByRole('link', {name: 'Review agent logs'}).click();
 
     await page.waitForLoadState("networkidle");
 
