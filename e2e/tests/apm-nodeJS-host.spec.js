@@ -1,11 +1,9 @@
 import { test, expect } from "@playwright/test";
-import deployConfig from './apm-nodeJS-host-deploy.json';
-const { 
-  v4: uuidv4,
-} = require('uuid');
+import deployConfig from "./apm-nodeJS-host-deploy.json";
+const { v4: uuidv4 } = require("uuid");
 
-var AWS = require('aws-sdk');
-AWS.config.update({region: process.env.AWS_REGION});
+var AWS = require("aws-sdk");
+AWS.config.update({ region: process.env.AWS_REGION });
 
 const { chromium } = require("playwright");
 
@@ -33,11 +31,14 @@ test.afterAll(async () => {
 
 test.describe("Node JS host installation", () => {
   test("should install on a newly created host", async () => {
-    test.slow();
+    test.setTimeout(10 * 60 * 1000);
 
     await page.getByText("Add data").first().click();
 
-    await page.locator('#card-body-wrapper-Logging').getByRole('button', { name: 'Node.js' }).click();
+    await page
+      .locator("#card-body-wrapper-Logging")
+      .getByRole("button", { name: "Node.js" })
+      .click();
 
     await page.getByText("On a host").first().click();
 
@@ -51,102 +52,164 @@ test.describe("Node JS host installation", () => {
       'div[id="shared-component-installator.node-js-installation"]'
     );
 
-    const applicationNameInput = await container.locator(
-      'input[type="text"]'
-    );
-    const appName = "nodetestapp1"
+    const applicationNameInput = await container.locator('input[type="text"]');
+    const appName = "nodetestapp1";
     await applicationNameInput.fill(appName);
 
     await page.getByText("Save").first().click();
 
     // step 1 - copy install newrelic
-    const step1copy = await page.locator("div.TerminalNode-command")
-    var command = []
+    const step1copy = await page.locator("div.TerminalNode-command");
+    var command = [];
     for (const item of await step1copy.all()) {
-      const val = (await item.innerText())
-      command.push(`${val}`)
+      const val = await item.innerText();
+      command.push(`${val}`);
       if (command.length == 2) {
-        break
+        break;
       }
     }
-    const licenseKey = ""
-    const envVars = `NEW_RELIC_LICENSE_KEY=${licenseKey} NEW_RELIC_APP_NAME=${appName}`
-    const stopNodetron = "sudo /usr/bin/supervisorctl stop nodetron1"
+    const licenseKey = "";
+    const envVars = `NEW_RELIC_LICENSE_KEY=${licenseKey} NEW_RELIC_APP_NAME=${appName}`;
+    const stopNodetron = "sudo /usr/bin/supervisorctl stop nodetron1";
 
-    deployConfig.instrumentations.services[0].params.step_configure = command[0]
-    deployConfig.instrumentations.services[0].params.step_onafterstart = `${stopNodetron};${envVars} ${command[1].replace("YOUR_MAIN_FILENAME.js","server.js")} config/app_config.json 2>&1 &`
+    deployConfig.instrumentations.services[0].params.step_configure =
+      command[0];
+    deployConfig.instrumentations.services[0].params.step_onafterstart = `${stopNodetron};${envVars} ${command[1].replace(
+      "YOUR_MAIN_FILENAME.js",
+      "server.js"
+    )} config/app_config.json 2>&1 &`;
 
+    console.log("deployConfig:", deployConfig);
     await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
       page.getByText("Connect your Logs and Infrastructure")
     ).toBeVisible();
-    
-    await page.getByRole('radio', { name: 'I want to install the agent directly on my host' }).click();
 
-    await page.getByRole('radio', { name: 'Linux' }).click();
+    await page
+      .getByRole("radio", {
+        name: "I want to install the agent directly on my host",
+      })
+      .click();
 
-    await page.getByLabel('Automatically answer "yes" to all install prompts. We\'ll stop the installer if there\'s an error.').check();
+    await page.getByRole("radio", { name: "Linux" }).click();
 
-    const infraStepCopy = await page.locator("div.TerminalNode-terminal")
-    var command = []
+    await page
+      .getByLabel(
+        "Automatically answer \"yes\" to all install prompts. We'll stop the installer if there's an error."
+      )
+      .check();
+
+    const infraStepCopy = await page.locator("div.TerminalNode-terminal");
+    var command = [];
     for (const item of await infraStepCopy.all()) {
-      const val = (await item.innerText())
-      command.push(`${val}`)
+      const val = await item.innerText();
+      command.push(`${val}`);
       if (command.length == 2) {
-        break
+        break;
       }
     }
-    
+
     await page.getByRole("button", { name: "Continue" }).click();
 
     // console.log(deployConfig)
 
     // Create an SQS service object
-    var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+    var sqs = new AWS.SQS({ apiVersion: "2012-11-05" });
 
     const messageId = uuidv4();
     var params = {
-     MessageAttributes: {
-      
-     },
-     MessageBody: JSON.stringify(deployConfig,null,2),
-     MessageDeduplicationId: messageId,
-     MessageGroupId: messageId,
-     QueueUrl: "https://sqs.us-east-2.amazonaws.com/709144918866/testDeployerQueue.fifo"
-   };
+      MessageAttributes: {},
+      MessageBody: JSON.stringify(deployConfig, null, 2),
+      MessageDeduplicationId: messageId,
+      MessageGroupId: messageId,
+      QueueUrl:
+        "https://sqs.us-east-2.amazonaws.com/709144918866/testDeployerQueue.fifo",
+    };
 
-   sqs.sendMessage(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-      expect(true).toBeFalsy();
-    } else {
-      console.log("Success", data.MessageId);
-    }
-  });
+    sqs.sendMessage(params, function (err, data) {
+      console.log("Sending message");
+      if (err) {
+        console.log("Error", err);
+        expect(true).toBeFalsy();
+      } else {
+        console.log("Success", data.MessageId);
+      }
+    });
 
-    await page.getByRole('button', { name: 'Test connection' }).click();
+    var dynamodb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+
+    var params = {
+      TableName: "DeployResponse",
+      Key: {
+        MessageId: { S: messageId },
+      },
+      ProjectionExpression: "ATTRIBUTE_NAME",
+    };
+
+    // Poll DynamoDB to read the item from the table
+    var dataItem = pollDynamoDB(dynamodb, params);
+    console.log("dataItem:", dataItem);
+
+    await page.getByRole("button", { name: "Test connection" }).click();
 
     await expect(
-      page.locator('div').filter({hasText: /^Node\.js agent$/}).first()
+      page
+        .locator("div")
+        .filter({ hasText: /^Node\.js agent$/ })
+        .first()
     ).toBeVisible();
 
     await expect(
-      page.locator('div').filter({hasText: /^On-host logs$/}).first()
+      page
+        .locator("div")
+        .filter({ hasText: /^On-host logs$/ })
+        .first()
     ).toBeVisible();
 
     await expect(
-      page.locator('div').filter({hasText: /^Infrastructure agent$/}).first()
+      page
+        .locator("div")
+        .filter({ hasText: /^Infrastructure agent$/ })
+        .first()
     ).toBeVisible();
 
     await expect(
       await page.getByText("Successfully installed. Review agent logs")
     ).toBeVisible();
 
-    await page.getByRole('link', {name: 'Review agent logs'}).click();
+    await page.getByRole("link", { name: "Review agent logs" }).click();
 
     await page.waitForLoadState("networkidle");
-
   });
-
 });
+
+function pollDynamoDB(dynamodb, params) {
+  let current = new Date();
+  let cDate =
+    current.getFullYear() +
+    "-" +
+    (current.getMonth() + 1) +
+    "-" +
+    current.getDate();
+  let cTime =
+    current.getHours() +
+    ":" +
+    current.getMinutes() +
+    ":" +
+    current.getSeconds();
+  let dateTime = cDate + " " + cTime;
+  console.log("Polling DynamoDB...", dateTime);
+  dynamodb.getItem(params, function (err, data) {
+    if (err) {
+      console.log("Error", err);
+    } else {
+      dataItem: data.Item;
+      if (dataItem == undefined) {
+        setTimeout(pollDynamoDB, 300);
+      } else {
+        return dataItem;
+      }
+    }
+  });
+}
