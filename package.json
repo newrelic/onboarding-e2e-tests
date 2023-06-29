@@ -18,7 +18,8 @@
     "@playwright/test": "^1.32.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.1388.0",
+    "@aws-sdk/client-dynamodb": "^3.362.0",
+    "@aws-sdk/client-sqs": "^3.362.0",
     "dotenv": "^16.0.3",
     "fs": "^0.0.1-security",
     "playwright": "^1.32.0",

@@ -1,41 +1,56 @@
 {
-    "services": [
-      {
-        "id": "nodetron1",
-        "source_repository": "https://github.com/newrelic/demo-nodetron.git",
-        "deploy_script_path": "deploy/linux/roles",
-        "port": 5000,
-        "destinations": [
-          "host1"
-        ]
-      }
-    ],
-    "resources": [
-      {
-        "id": "host1",
-        "provider": "aws",
-        "type": "ec2",
-        "size": "t3.small"
-      }
-    ],
-    "instrumentations": {
-      "services": [
+  "services": [
+    {
+      "id": "nodetron1",
+      "source_repository": "https://github.com/newrelic/demo-nodetron.git",
+      "deploy_script_path": "deploy/linux/roles",
+      "port": 5000,
+      "destinations": [
+        "host1"
+      ],
+      "files": [
         {
-          "id": "exec1",
-          "service_ids": [
-            "nodetron1"
-          ],
-          "source_repository": "https://github.com/newrelic/open-install-library.git",
-          "deploy_script_path": "test/deploy/linux/shell/roles",
-          "params": {
-          }
+          "destination_filepath": "engine/cronjob.json",
+          "content": [
+              {
+                  "frequency": "* * * * *",
+                  "job": "curl -S [service:nodetron1:url]/api/inventory",
+                  "root": false
+              }
+          ]
         }
       ]
-    },
-    "global_tags": {
-      "owning_team": "virtuoso",
-      "Environment": "development",
-      "Department": "Product",
-      "Product": "virtuoso"
     }
+  ],
+
+  "resources": [
+    {
+      "id": "host1",
+      "provider": "aws",
+      "type": "ec2",
+      "size": "t3.small"
+    }
+  ],
+
+  "instrumentations": {
+    "services": [
+      {
+        "id": "exec1",
+        "service_ids": [
+          "nodetron1"
+        ],
+        "source_repository": "https://github.com/newrelic/open-install-library.git",
+        "deploy_script_path": "test/deploy/linux/shell/roles",
+        "params": {
+        }
+      }
+    ]
+  },
+
+  "global_tags": {
+    "owning_team": "virtuoso",
+    "Environment": "development",
+    "Department": "Product",
+    "Product": "virtuoso"
   }
+}
