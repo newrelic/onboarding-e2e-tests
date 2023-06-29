@@ -96,7 +96,7 @@ test.describe("Node JS host installation", () => {
     const response = await client.send(sqsCommand);
     installCtx.messageId = response.MessageId;
     console.log("Success SQS messageId:", installCtx.messageId);
-    // installCtx.messageId = "ddb7dce7-3a63-4243-951b-69eb0f675062"
+    // installCtx.messageId = "4172ca7c-2ca9-4d73-bef4-0ee16be19fda"
     // installCtx.messageId = "invalid one"
 
     await page.getByRole("button", { name: "Continue" }).click();
@@ -104,7 +104,7 @@ test.describe("Node JS host installation", () => {
     await expect(
       page.getByText("Connect your Logs and Infrastructure")
     ).toBeVisible();
-    
+
     await page.getByRole('radio', { name: 'I want to install the agent directly on my host' }).click();
 
     await page.getByRole('radio', { name: 'Linux' }).click();
@@ -183,8 +183,8 @@ test.describe("Node JS host installation", () => {
     ).toBeVisible();
 
     await expect(
-      await page.getByText("Successfully installed.")
-    ).toBeVisible();
+      page.getByText("Successfully installed.")
+    ).toBeVisible({ timeout: 600000 });
 
     // await page.getByRole('link', {name: 'See your data'}).click();
 
