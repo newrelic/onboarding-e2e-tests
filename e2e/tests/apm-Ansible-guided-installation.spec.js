@@ -5,6 +5,8 @@ let browser;
 let context;
 let page;
 
+// update the script for Ansible user flow following the 
+// instructions in the UI
 test.beforeEach(async () => {
   browser = await chromium.launch();
   context = await browser.newContext({
